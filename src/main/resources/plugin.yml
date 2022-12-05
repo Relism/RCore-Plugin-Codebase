@@ -1,6 +1,6 @@
-name: RCore-Sync
+name: RCore
 version: '${project.version}'
-main: dev.relismdev.rcoresync.RCoreSync
+main: dev.relismdev.rcore.RCore
 api-version: 1.19
 prefix: RCore
 authors: [Relism]

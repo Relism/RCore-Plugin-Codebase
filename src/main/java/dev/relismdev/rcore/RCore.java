@@ -1,21 +1,21 @@
-package dev.relismdev.rcoresync;
+package dev.relismdev.rcore;
 
-import dev.relismdev.rcoresync.commands.reload;
-import dev.relismdev.rcoresync.commands.getData;
+import dev.relismdev.rcore.commands.reload;
+import dev.relismdev.rcore.commands.getData;
 import org.bukkit.plugin.java.JavaPlugin;
-import dev.relismdev.rcoresync.api.*;
-import dev.relismdev.rcoresync.utils.*;
-import dev.relismdev.rcoresync.utils.msg;
+import dev.relismdev.rcore.api.*;
+import dev.relismdev.rcore.utils.*;
+import dev.relismdev.rcore.utils.msg;
 import java.io.File;
 
-public final class RCoreSync extends JavaPlugin {
+public final class RCore extends JavaPlugin {
 
     public String authtoken = getConfig().getString("authtoken");
     public String accept_terms = getConfig().getString("accept-terms");
     public Integer port = getConfig().getInt("port");
     public String apisecret = getConfig().getString("apisecret");
 
-    public static RCoreSync plugin;
+    public static RCore plugin;
 
     //class handling
     public dataHandler dh = new dataHandler();

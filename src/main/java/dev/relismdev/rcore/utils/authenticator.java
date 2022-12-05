@@ -1,6 +1,6 @@
-package dev.relismdev.rcoresync.utils;
+package dev.relismdev.rcore.utils;
 
-import dev.relismdev.rcoresync.api.dataHandler;
+import dev.relismdev.rcore.api.dataHandler;
 
 public class authenticator {
 

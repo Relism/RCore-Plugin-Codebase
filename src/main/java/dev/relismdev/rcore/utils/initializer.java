@@ -1,7 +1,7 @@
-package dev.relismdev.rcoresync.utils;
+package dev.relismdev.rcore.utils;
 
-import dev.relismdev.rcoresync.api.dataHandler;
-import dev.relismdev.rcoresync.api.*;
+import dev.relismdev.rcore.api.dataHandler;
+import dev.relismdev.rcore.api.*;
 import java.io.File;
 
 public class initializer {

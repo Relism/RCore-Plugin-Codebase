@@ -1,7 +1,7 @@
-package dev.relismdev.rcoresync.commands;
+package dev.relismdev.rcore.commands;
 
-import dev.relismdev.rcoresync.api.dataHandler;
-import dev.relismdev.rcoresync.utils.reloader;
+import dev.relismdev.rcore.api.dataHandler;
+import dev.relismdev.rcore.utils.reloader;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;

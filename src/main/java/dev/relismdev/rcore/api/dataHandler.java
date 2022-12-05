@@ -1,7 +1,7 @@
-package dev.relismdev.rcoresync.api;
+package dev.relismdev.rcore.api;
 
-import dev.relismdev.rcoresync.utils.randomGen;
-import dev.relismdev.rcoresync.utils.msg;
+import dev.relismdev.rcore.utils.randomGen;
+import dev.relismdev.rcore.utils.msg;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;

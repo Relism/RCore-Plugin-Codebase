@@ -1,4 +1,4 @@
-package dev.relismdev.rcoresync.utils;
+package dev.relismdev.rcore.utils;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;

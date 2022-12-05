@@ -5,13 +5,13 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>dev.relismdev</groupId>
-    <artifactId>rcore-sync</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <artifactId>RCore</artifactId>
+    <version>1.0</version>
     <packaging>jar</packaging>
 
-    <name>RCoreSync</name>
+    <name>RCore</name>
 
-    <description>just a sync plugin to mongodb</description>
+    <description>Core Plugin using it's internal api and RCore API for data handling and exchange</description>
     <properties>
         <java.version>1.8</java.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>

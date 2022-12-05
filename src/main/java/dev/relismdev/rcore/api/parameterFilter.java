@@ -1,4 +1,4 @@
-package dev.relismdev.rcoresync.api;
+package dev.relismdev.rcore.api;
 
 import com.sun.net.httpserver.Filter;
 import com.sun.net.httpserver.HttpExchange;
