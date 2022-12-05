@@ -1,0 +1,15 @@
+name: RCore-Sync
+version: '${project.version}'
+main: dev.relismdev.rcoresync.RCoreSync
+api-version: 1.19
+prefix: RCore
+authors: [Relism]
+description: just a sync plugin to mongodb
+website: panel.relimc.com
+commands:
+  getdata:
+    description: command1
+    usage: /<command> data
+  reloadData:
+    description: command2
+    usage: /<command>

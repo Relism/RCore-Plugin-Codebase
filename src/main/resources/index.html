@@ -1,0 +1,70 @@
+<!DOCTYPE html> <html lang=en><!--
+ Default RCore-API root page, feel free to edit the contents of this file or the entire web folder with whatever webpage you like (it supports nested pages)
+--><meta charset=utf-8>
+<meta name=viewport content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<title>RCore-API</title>
+<meta name=description content="Your Minecraft, everywhere.">
+<style>:root{--blue:#0000ff;--indigo:#3d5afe;--purple:#aa00ff;--pink:#f50057;--red:#ff1744;--orange:#f6c343;--yellow:#ffff00;--green:#5cc72a;--teal:#1de9b6;--cyan:#00e5ff;--white:#ffffff;--gray:#868e96;--gray-dark:#343a40;--primary:#161624;--secondary:#0000ff;--success:#5cc72a;--info:#00e5ff;--warning:#f6c343;--danger:#ff1744;--light:#f8f9fa;--dark:black;--breakpoint-xs:0;--breakpoint-sm:576px;--breakpoint-md:768px;--breakpoint-lg:992px;--breakpoint-xl:1200px;--font-family-sans-serif:K2D,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol";--font-family-monospace:SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace}*,*::before,*::after{box-sizing:border-box}html{font-family:sans-serif;line-height:1.15;-webkit-text-size-adjust:100%;-ms-text-size-adjust:100%;-ms-overflow-style:scrollbar;-webkit-tap-highlight-color:transparent}@-ms-viewport{width:device-width}footer,section{display:block}body{margin:0;font-family:K2D,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol";font-size:1rem;font-weight:400;line-height:1.5;color:#343a40;text-align:left;background-color:#ffffff}h1{margin-top:0}p{margin-top:0}ul{margin-top:0;margin-bottom:1rem}a{text-decoration:none;background-color:transparent;-webkit-text-decoration-skip:objects}a:hover{color:#666666;text-decoration:none}a:not([href]):not([tabindex]){color:inherit;text-decoration:none}a:not([href]):not([tabindex]):hover,a:not([href]):not([tabindex]):focus{color:inherit;text-decoration:none}a:not([href]):not([tabindex]):focus{outline:0}pre,code{font-size:1em}pre{margin-top:0;margin-bottom:1rem;-ms-overflow-style:scrollbar}svg:not(:root){overflow:hidden}::-webkit-file-upload-button{font:inherit;-webkit-appearance:button}h1{margin-bottom:1rem;font-family:inherit;font-weight:700;line-height:1.5;color:#000000}h1{font-size:2.5rem}.lead{font-size:1.2rem;font-weight:500}.list-inline{padding-left:0;list-style:none}.list-inline-item{display:inline-block}.list-inline-item:not(:last-child){margin-right:0.5rem}.container{width:100%;padding-right:15px;padding-left:15px;margin-right:auto;margin-left:auto}@media (min-width:576px){.container{max-width:540px}}@media (min-width:768px){.container{max-width:720px}}@media (min-width:992px){.container{max-width:960px}}@media (min-width:1200px){.container{max-width:1140px}}.row{display:-ms-flexbox;display:flex;-ms-flex-wrap:wrap;flex-wrap:wrap;margin-right:-15px;margin-left:-15px}.col-12,.col-md-4,.col-md-9{position:relative;width:100%;min-height:1px;padding-right:15px;padding-left:15px}.col-12{-ms-flex:0 0 100%;flex:0 0 100%;max-width:100%}@media (min-width:768px){.col-md-4{-ms-flex:0 0 33.33333%;flex:0 0 33.33333%;max-width:33.33333%}.col-md-9{-ms-flex:0 0 75%;flex:0 0 75%;max-width:75%}}.btn{font-weight:700;text-align:center;white-space:nowrap;vertical-align:middle;-webkit-user-select:none;-moz-user-select:none;-ms-user-select:none;user-select:none;border:2px solid transparent;padding:0.5rem 1.5rem;font-size:1rem;line-height:1.5;border-radius:0.3rem;transition:all 0.2s}@media screen and (prefers-reduced-motion:reduce){.btn{transition:none}}.btn:hover,.btn:focus{text-decoration:none}.btn:focus,.btn.focus{outline:0;box-shadow:none}.btn.disabled,.btn:disabled{opacity:0.65}.btn:not(:disabled):not(.disabled){cursor:pointer}.btn:not(:disabled):not(.disabled):active,.btn:not(:disabled):not(.disabled).active{background-image:none}.btn-success{color:#ffffff;background-color:#22D3EE;border-color:#22D3EE}.btn-success:hover{color:#ffffff;background-color:#20b1c7;border-color:#20b1c7}.btn-success:focus,.btn-success.focus{box-shadow:0 0 0 0.2rem rgba(92,199,42,0.5)}.btn-success.disabled,.btn-success:disabled{color:#ffffff;background-color:#22D3EE;border-color:#22D3EE}.btn-success:not(:disabled):not(.disabled):active,.btn-success:not(:disabled):not(.disabled).active,.show>.btn-success.dropdown-toggle{color:#ffffff;background-color:#22D3EE;border-color:#22D3EE}.btn-success:not(:disabled):not(.disabled):active:focus,.btn-success:not(:disabled):not(.disabled).active:focus,.show>.btn-success.dropdown-toggle:focus{box-shadow:0 0 0 0.2rem rgba(92,199,42,0.5)}.btn-dark{color:#ffffff;background-color:black;border-color:black}.btn-dark:hover{color:#ffffff;background-color:black;border-color:black}.btn-dark:focus,.btn-dark.focus{box-shadow:0 0 0 0.2rem rgba(0,0,0,0.5)}.btn-dark.disabled,.btn-dark:disabled{color:#ffffff;background-color:black;border-color:black}.btn-dark:not(:disabled):not(.disabled):active,.btn-dark:not(:disabled):not(.disabled).active,.show>.btn-dark.dropdown-toggle{color:#ffffff;background-color:black;border-color:black}.btn-dark:not(:disabled):not(.disabled):active:focus,.btn-dark:not(:disabled):not(.disabled).active:focus,.show>.btn-dark.dropdown-toggle:focus{box-shadow:0 0 0 0.2rem rgba(0,0,0,0.5)}.bg-light{background-color:#f8f9fa!important}.d-flex{display:-ms-flexbox!important;display:flex!important}.flex-row{-ms-flex-direction:row!important;flex-direction:row!important}.justify-content-between{-ms-flex-pack:justify!important;justify-content:space-between!important}.align-items-center{-ms-flex-align:center!important;align-items:center!important}@supports ((position:-webkit-sticky) or (position:sticky)){.sticky-top{position:-webkit-sticky;position:sticky;top:0;z-index:1020}}.my-2{margin-top:0.5rem!important}.mr-2{margin-right:0.5rem!important}.my-2{margin-bottom:0.5rem!important}.mt-5{margin-top:3rem!important}.mb-5{margin-bottom:3rem!important}.mt-6{margin-top:6rem!important}.pt-4{padding-top:1.5rem!important}.py-5{padding-top:3rem!important}.pb-5,.py-5{padding-bottom:3rem!important}.mx-auto{margin-right:auto!important}.mx-auto{margin-left:auto!important}.text-center{text-align:center!important}.text-muted{color:#adb5bd!important}::selection{background-color:#ffffff;color:#ffffff}a:not(.heading-brand){font-weight:500}.heading-brand{font-weight:800;font-size:1.75rem}.svg-icon{display:-ms-inline-flexbox;display:inline-flex;-ms-flex-direction:row;flex-direction:row;-ms-flex-align:center;align-items:center}.btn{box-shadow:0 4px 6px rgba(255,255,0,0.11),0 1px 3px rgba(0,0,0,0.08)}.btn:active,.btn:focus,.btn:focus{box-shadow:none!important}footer ul>li:not(:last-child){margin-right:1.5rem!important}footer a{color:#000000;font-weight:700}.bg-gradient{background:linear-gradient(#F8F9FA,#F8F9FA)}.code-window{border-radius:.45rem;background-color:#11111D;padding:1.52rem;box-shadow:0 8px 24px 0 rgba(0,0,0,0.1)}.code-window .dots{display:-ms-flexbox;display:flex;-ms-flex-direction:row;flex-direction:row;-ms-flex-align:center;align-items:center;-ms-flex-pack:start;justify-content:flex-start}.code-window .dots div{margin-right:.5rem;width:.75rem;height:.75rem;border-radius:50%}.code-window .dots div.red{background-color:#ff1744}.code-window .dots div.orange{background-color:#f6c343}.code-window .dots div.green{background-color:#5cc72a}code[class*="language-"],pre[class*="language-"]{color:#fff;text-shadow:0 1px 1px #000;font-family:Menlo,Monaco,"Courier New",monospace;direction:ltr;text-align:left;word-spacing:normal;white-space:pre;word-wrap:normal;line-height:1.4;background:none;border:0;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-hyphens:none;-moz-hyphens:none;-ms-hyphens:none;hyphens:none}pre[class*="language-"] code{float:left;padding:0 15px 0 0}pre[class*="language-"],:not(pre)>code[class*="language-"]{background:#222}pre[class*="language-"]{padding:15px;margin:1em 0;overflow:auto;-moz-border-radius:8px;-webkit-border-radius:8px;border-radius:8px}:not(pre)>code[class*="language-"]{padding:5px 10px;line-height:1;-moz-border-radius:3px;-webkit-border-radius:3px;border-radius:3px}.token.comment{color:#797979}.token.operator,.token.punctuation{color:#fff}.token.string{color:#B0C975}.token.keyword{color:#c27628}.token.function{color:#e5a638}pre[class*="language-"].line-numbers{position:relative;padding-left:2.5em;counter-reset:linenumber}pre[class*="language-"].line-numbers>code{position:relative;white-space:inherit}.line-numbers .line-numbers-rows{position:absolute;pointer-events:none;top:0;font-size:100%;left:-3.8em;width:3em;letter-spacing:-1px;-webkit-user-select:none;-moz-user-select:none;-ms-user-select:none;user-select:none}.line-numbers-rows>span{pointer-events:none;display:block;counter-increment:linenumber}.line-numbers-rows>span:before{content:counter(linenumber);color:#ced4da;display:block;padding-right:0.8em;text-align:right}</style>
+<link rel=canonical href=http://129.152.9.46:25608/#><meta http-equiv=content-security-policy content="default-src 'none'; font-src 'self' data:; img-src 'self' data:; style-src 'unsafe-inline'; media-src 'self' data:; script-src 'unsafe-inline' data:; object-src 'self' data:;"><style>img[src="data:,"],source[src="data:,"]{display:none!important}</style></head>
+<body cz-shortcut-listen=true>
+<section class="bg-gradient pt-4 pb-5">
+    <div class=container>
+        <div class=row>
+            <div class="col-12 d-flex flex-row align-items-center justify-content-between">
+                <div class=heading-brand>RCore-API</div>
+                <a href=https://github.com/Relism/RCore-API class="btn btn-dark svg-icon" target=_blank>
+                    <svg xmlns=http://www.w3.org/2000/svg width=24 height=24 viewBox="0 0 24 24" fill=none stroke=currentColor stroke-width=2 stroke-linecap=round stroke-linejoin=round class="feather feather-github mr-2"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path></svg>
+                    Github
+                </a>
+            </div>
+        </div>
+        <div class="row mt-6">
+            <div class="col-md-9 mx-auto text-center">
+                <h1>Your Minecraft, everywhere.</h1>
+                <p class="lead mb-5">RCore-API is an easy-to-use API that not only runs the logic behind the RCore Plugin, but that also lets you implement your Minecraft Server in your self-coded applications.</p>
+                <a href=https://apidocs.relimc.com/ class="btn btn-success svg-icon" target=_blank>
+                <svg xmlns=http://www.w3.org/2000/svg width=24 height=24 viewBox="0 0 24 24" fill=none stroke=currentColor stroke-width=2 stroke-linecap=round stroke-linejoin=round class="feather feather-book-open mr-2"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path></svg>
+                Read the Docs
+                </a>
+            </div>
+        </div>
+        <div class="row mt-5">
+            <div class="col-md-9 mx-auto">
+                <div class=code-window>
+                    <div class=dots>
+                        <div class=red></div>
+                        <div class=orange></div>
+                        <div class=green></div>
+                    </div>
+                    <pre class="line-numbers language-javascript"><code class=language-javascript><span class="token keyword">const</span> axios <span class="token operator">=</span> <span class="token function">require</span><span class="token punctuation">(</span><span class="token string">'axios'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token comment">//Example : retrieve and log online players</span>
+axios<span class="token punctuation">.</span><span class="token keyword">get</span><span class="token punctuation">(</span><span class="token string">'http://[ip:port]/api/getOnlinePlayers/?authtoken=[authtoken]'</span><span class="token punctuation">)</span>
+	<span class="token punctuation">.</span><span class="token function">then</span><span class="token punctuation">(</span>resp <span class="token operator">=&gt;</span> <span class="token punctuation">{</span>
+    	console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span>resp<span class="token punctuation">.</span>data<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token comment">//do stuff</span>
+	<span class="token punctuation">}</span>
+<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span aria-hidden=true class=line-numbers-rows><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<footer class="py-5 bg-light">
+    <div class=container>
+        <div class=row>
+            <div class="col-12 text-center">
+                <ul class=list-inline>
+                    <li class=list-inline-item><a href=https://panel.relimc.com/ target=_blank>RHosting</a></li>
+                    <li class=list-inline-item><a href=https://discord.gg/Np8t5MwHBU target=_blank>Discord</a></li>
+                    <li class=list-inline-item><a href=https://github.com/Relism/RCore-API target=_blank>Github</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="row my-2">
+            <div class="col-md-4 mx-auto text-muted text-center small-xl">
+                © 2022 Relism's MC - All Rights Reserved
+            </div>
+        </div>
+    </div>
+</footer>

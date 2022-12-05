@@ -1,0 +1,18 @@
+# -----------------------------------------
+# Plugin activation :
+# - authtoken: Set this as the authtoken you were giving on purchase.
+# - accept-terms: RCore handles your data as stated in the docs (apidocs.relimc.com)
+#   ↳ By setting this as true you are indicating your agreement to our api terms.
+authtoken:
+accept-terms:
+# -----------------------------------------
+# API :
+# - port: Set this as the port you wish to run the API on (make sure its an open port, or ask your host to open it for you).
+#   ↳ NOTE: You can change the contents of the Rcore-Sync/web folder to host your own webpage
+#   ↳ If you do so, make sure the index.html file (render entrypoint) is in the web folder and not anywhere else.
+# - apisecret: As stated in the docs, the apisecret is a parameter to perform certain operations on your RCore API Instance.
+#   ↳ NOTE : Relism's MC customer support will NEVER ask for it, so keep it for yourself ONLY.
+#   ↳ Set this password to something secure (made only of alphanumerics, no symbols!) and NEVER share it;
+port:
+apisecret:
+# -----------------------------------------
