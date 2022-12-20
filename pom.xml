@@ -77,5 +77,10 @@
             <artifactId>mongodb-driver-sync</artifactId>
             <version>3.11.3</version>
         </dependency>
+        <dependency>
+            <groupId>org.json</groupId>
+            <artifactId>json</artifactId>
+            <version>20220924</version>
+        </dependency>
     </dependencies>
 </project>

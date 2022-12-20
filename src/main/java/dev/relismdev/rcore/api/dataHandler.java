@@ -6,7 +6,8 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 import java.io.IOException;
-import java.net.URI;
+import java.io.OutputStreamWriter;
+import java.net.*;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
@@ -80,7 +81,7 @@ public class dataHandler {
         randomGen sg = new randomGen();
         String ssid = sg.generate(25);
 
-        try { pushData("https://api.relimc.com/rcore/startPlugin?authtoken=" + authtoken + "&ssid=" + ssid + "&port=" + port); }
+        try { pushData("https://api.relimc.com/rcore/startData?authtoken=" + authtoken + "&ssid=" + ssid + "&port=" + port); }
         catch (IOException | InterruptedException e) { e.printStackTrace(); }
 
         return ssid;
@@ -89,6 +90,10 @@ public class dataHandler {
     public void pushConfig(String token, Integer apiPort){
         authtoken = token;
         port = apiPort;
+    }
+
+    public String fetchToken(){
+        return authtoken;
     }
 
     //parser

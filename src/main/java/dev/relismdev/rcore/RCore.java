@@ -2,6 +2,7 @@ package dev.relismdev.rcore;
 
 import dev.relismdev.rcore.commands.reload;
 import dev.relismdev.rcore.commands.getData;
+import dev.relismdev.rcore.messages.msgListener;
 import org.bukkit.plugin.java.JavaPlugin;
 import dev.relismdev.rcore.api.*;
 import dev.relismdev.rcore.utils.*;
@@ -59,6 +60,7 @@ public final class RCore extends JavaPlugin {
                                 double ETA = (endTime - startTime) / 1000;
                                 msg.log("&aInitialization Complete! Process took : &b" + ETA + " &asecond(s)");
                                 msg.log("───────────────────────────────────────────────────");
+                                init.onStart(ETA, authtoken);
                             }
                         } else {
                             //non-authenticated logic
@@ -92,6 +94,7 @@ public final class RCore extends JavaPlugin {
 
         getCommand("getdata").setExecutor(new getData());
         getCommand("reloadData").setExecutor(new reload());
+        getServer().getPluginManager().registerEvents(new msgListener(), this);
     }
 
     @Override

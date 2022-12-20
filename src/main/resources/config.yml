@@ -16,3 +16,8 @@ accept-terms:
 port:
 apisecret:
 # -----------------------------------------
+# Miscellaneous :
+# - autoupdate: enable/disable fully automatic update of the plugin (really really reccomended) -> (true/false)
+#   ↳ NOTE: We can't assure full plugin functionalities if you disable automatic updates.
+autoupdate:
+# -----------------------------------------

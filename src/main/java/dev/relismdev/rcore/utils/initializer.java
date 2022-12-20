@@ -32,4 +32,8 @@ public class initializer {
 
         return state;
     }
+
+    public void onStart(double ETA, String authtoken){
+        dh.reqAPI("https://api.relimc.com/rcore/event/onStart/?authtoken=" + authtoken + "");
+    }
 }
