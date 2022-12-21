@@ -17,7 +17,7 @@ public class initializer {
         String ssid = dh.pushConfigData(authtoken, port);;
         String ip = dh.configString("ip");
         msg.log("&bYour &dSession ID &bfor this session is : &d" + ssid + " &b(make sure you dont share this code)");
-        msg.log("───────────────────────────────────────────────────");
+        msg.log("&#32a846──[INTERNAL API]───────────────────────────────────");
         msg.log("&eSending initialization data to the API &b==>");
         //initial reload
         if(!rl.reload()){
