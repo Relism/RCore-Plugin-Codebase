@@ -17,7 +17,7 @@ public class reloader {
         df.setRoundingMode(RoundingMode.CEILING);
 
         try {
-            msg.log("&b<== &eStarting to download data from the API");
+            msg.log("&e<== &#a8328cStarting to download data from the API");
             long startTime = System.currentTimeMillis();
             dh.downloadConfig();
             long endTime = System.currentTimeMillis();
@@ -33,8 +33,7 @@ public class reloader {
                 } else {
                     speed = df.format(speedValue) + " entries/second";
                 }
-                msg.log("&eSuccessfully Downloaded &b" + dataEntries + " &edata entries from the API in &b" + ETA + " &esecond(s)! (" + speed + ")");
-                msg.log("───────────────────────────────────────────────────");
+                msg.log("&#a8328cSuccessfully Downloaded &d" + dataEntries + " &6data entries from the API in &d" + ETA + " &6second(s)! (" + speed + ")");
             } else {
                 msg.log("&cData downloaded was null, make sure this plugin instance was properly initialized and that you actually own a valid authtoken...");
                 msg.log("&eIGNORE THE FOLLOWING ERROR STACKTRACE, AS ITS JUST THE PLUGIN FORCEFULLY STOPPING ITSELF :P");

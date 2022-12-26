@@ -5,6 +5,8 @@ import java.nio.charset.StandardCharsets;
 import java.util.concurrent.*;
 
 import okhttp3.OkHttpClient;
+import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerChatEvent;
@@ -27,6 +29,30 @@ public class msgListener implements Listener {
 
     @EventHandler
     public void onPlayerChat(PlayerChatEvent event) {
+        String senderLanguage = event.getPlayer().getMetadata("language").get(0).asString();
+        String message = event.getMessage();
+        for (Player p : Bukkit.getOnlinePlayers()) {
+            String receiverLanguage = p.getMetadata("language").get(0).asString();
+            if (!receiverLanguage.equals(senderLanguage)) {
+                event.setCancelled(true);
+                executor.execute(() -> {
+                    try {
+                        String translatedMessage = translateMessage(message, receiverLanguage);
+                        p.sendMessage(translatedMessage);
+                    } catch (ParseException e) {
+                        e.printStackTrace();
+                    }
+                });
+            }
+        }
+    }
+
+    public String translateMessage(String message, String language) throws ParseException {
+        String authtoken = plugin.getConfig().getString("authtoken");
+        return((String) dh.toObject(dh.reqAPI("https://api.relimc.com/rcore/translate/?authtoken=" + authtoken + "&text=" + message + "&targetLanguage=" + language)).get("text"));
+    }
+
+    /*public void onPlayerChat(PlayerChatEvent event) {
         executor.execute(() -> {
             msx.pushMessage(event);
             try {
@@ -35,10 +61,10 @@ public class msgListener implements Listener {
                 e.printStackTrace();
             }
         });
-    }
+    }*/
 
-    public JSONObject translateMessage(String message, String language) throws ParseException {
+    /*public JSONObject translateMessage(String message, String language) throws ParseException {
         String authtoken = plugin.getConfig().getString("authtoken");
         return(dh.toObject(dh.reqAPI("https://api.relimc.com/rcore/translate/?authtoken=" + authtoken + "&text=" + message + "&targetLanguage=" + language)));
-    }
+    }*/
 }

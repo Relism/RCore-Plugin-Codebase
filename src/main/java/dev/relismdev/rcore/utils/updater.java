@@ -75,15 +75,15 @@ public class updater {
         msg.log("&#a83242Checking the RCore version...");
         Float current = Float.valueOf(ver);
         Float latest = Float.valueOf((String) fetchLatest().get("version"));
-        msg.log("&#a83242Current : " + current);
-        msg.log("&#a83242Latest : " + latest);
+        msg.log("&6Current : &d" + current);
+        msg.log("&6Latest : &d" + latest);
         if(latest.equals(current)){
             //plugin is up to date
             msg.log("&#a83242Up to date ! Running RCore v" + current);
         } else {
             Float behind = (latest - current)*10;
-            msg.log("&#a83242You are not running the latest RCore version !");
-            msg.log("&#a83242You are : " + behind + " build(s) behind!");
+            msg.log("You are not running the latest RCore version !");
+            msg.log("You are : " + behind + " build(s) behind!");
         }
     }
 }

@@ -13,21 +13,21 @@ public class initializer {
 
     public boolean initialize(String authtoken, Integer port, File webFolder, String apisecret){
 
-        msg.log("&aInitializing the plugin...");
+        msg.log("&#a8328cInitializing the plugin...");
         String ssid = dh.pushConfigData(authtoken, port);;
         String ip = dh.configString("ip");
-        msg.log("&bYour &dSession ID &bfor this session is : &d" + ssid + " &b(make sure you dont share this code)");
-        msg.log("&#32a846──[INTERNAL API]───────────────────────────────────");
-        msg.log("&eSending initialization data to the API &b==>");
+        msg.log("&6Session ID &#a8328cfor this session is : &d" + ssid + " &#a8328c(make sure you dont share this code)");
+        msg.log("&#a8328cSending initialization data to the API &e==>");
         //initial reload
         if(!rl.reload()){
             state = false;
         } else {
             state = true;
         }
-        msg.log("&bInitializing the Internal API...");
+        msg.log("&#32a846──[INTERNAL API]───────────────────────────────────");
+        msg.log("&#32a846Initializing the Internal API...");
         api.startHttpServer(authtoken, port, ssid, webFolder, apisecret);
-        msg.log("&bStarted the Internal API on ==> : &dhttp://" + dh.configString("ip") + ":" + port);
+        msg.log("&#32a846Started the Internal API on ==> : &dhttp://" + dh.configString("ip") + ":" + port);
         msg.log("───────────────────────────────────────────────────");
 
         return state;

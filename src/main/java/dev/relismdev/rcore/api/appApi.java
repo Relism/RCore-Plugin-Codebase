@@ -5,20 +5,23 @@ import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 import com.sun.net.httpserver.HttpServer;
 import dev.relismdev.rcore.utils.*;
-import java.io.File;
-import java.io.IOException;
-import java.io.OutputStream;
+
+import java.io.*;
 import java.lang.management.*;
 import java.net.InetSocketAddress;;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.util.Collection;
 import java.util.Map;
+import java.util.Properties;
+
 import dev.relismdev.rcore.utils.reloader;
 import dev.relismdev.rcore.messages.*;
 import dev.relismdev.rcore.messages.msgBuilder;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
+import org.bukkit.metadata.MetadataValue;
 import org.bukkit.plugin.Plugin;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -29,6 +32,7 @@ public class appApi {
     public fileHandler fh = new fileHandler();
     public msgExchanger msx = new msgExchanger();
     public msgBuilder builder = new msgBuilder();
+    public misc misc = new misc();
 
     public void startHttpServer(String authtoken, Integer port, String ssid, File web, String apisecret) {
         if (!web.exists()) {
@@ -173,16 +177,42 @@ public class appApi {
 
                             //Get the plugin list in an array
                             Plugin[] plugins = Bukkit.getPluginManager().getPlugins();
-                            JSONArray pluginNames = new JSONArray();
-                            for (Plugin plugin: plugins) {
-                                pluginNames.put(plugin.getName());
+                            JSONArray pluginsArray = new JSONArray();
+                            for (Plugin plugin : plugins) {
+                                JSONObject pluginData = new JSONObject();
+                                pluginData.put("name", plugin.getName());
+                                pluginData.put("version", plugin.getDescription().getVersion());
+                                pluginData.put("author", plugin.getDescription().getAuthors());
+                                pluginData.put("enabled", plugin.isEnabled());
+                                pluginsArray.put(pluginData);
                             }
 
                             //Get the online players names in an array
                             Collection < ? extends Player > onlinePlayers = Bukkit.getOnlinePlayers();
-                            JSONArray playerNames = new JSONArray();
+                            /*JSONArray playerNames = new JSONArray();
                             for (Player player: onlinePlayers) {
                                 playerNames.put(player.getName());
+                            }*/
+                            JSONArray playersArray = new JSONArray();
+                            for (Player player : onlinePlayers) {
+                                JSONObject playerData = new JSONObject();
+                                playerData.put("username", player.getName());
+                                playerData.put("uuid", player.getUniqueId());
+                                //playerData.put("premium", misc.isPremium(player));
+                                // To add additional data to the player object, use the following syntax:
+                                // playerData.put("key", value);
+                                playersArray.put(playerData);
+                            }
+
+                            Properties serverProperties = new Properties();
+                            InputStream input = new FileInputStream("server.properties");
+                            serverProperties.load(input);
+                            input.close();
+
+                            JSONObject serverPropertiesData = new JSONObject();
+                            for (String key: serverProperties.stringPropertyNames()) {
+                                String value = serverProperties.getProperty(key);
+                                serverPropertiesData.put(key, value);
                             }
 
                             //create the JSON obj
@@ -190,10 +220,11 @@ public class appApi {
                             obj.put("server_version", Bukkit.getBukkitVersion());
                             obj.put("hardware", hardware);
                             obj.put("uptime", uptime);
-                            obj.put("online_players", onlinePlayers.size());
-                            obj.put("player_list", playerNames);
-                            obj.put("plugins", plugins.length);
-                            obj.put("plugin_list", pluginNames);
+                            obj.put("player_count", onlinePlayers.size());
+                            obj.put("players", playersArray);
+                            obj.put("plugin_count", plugins.length);
+                            obj.put("plugins", pluginsArray);
+                            obj.put("properties", serverPropertiesData);
 
                             //return the JSON obj as response
                             replyOK(exchange, obj.toString(2));
@@ -217,6 +248,61 @@ public class appApi {
                             msg.log("&b==> &dReceived Internal API Request to Reload the Plugin...");
                             rl.reload();
                             replyOK(exchange, "Reloaded");
+                        } else {
+                            replyERROR(exchange, "Wrong apisecret");
+                        }
+                    } else {
+                        replyERROR(exchange, "You have to provide a valid apisecret");
+                    }
+                }
+            }).getFilters().add(new parameterFilter());
+
+            server.createContext("/api/getPlayer", new HttpHandler() {
+                @Override
+                public void handle(HttpExchange exchange) throws IOException {
+                    Map < String, Object > params =
+                            (Map < String, Object > ) exchange.getAttribute("parameters");
+
+                    if (params.get("secret") != null) {
+                        if (params.get("secret").equals(apisecret)) {
+                            String playerName = params.get("player").toString();
+                            Player player = Bukkit.getPlayer("playerName");
+                            // Get the player's data file
+                            File playerDataFile = new File(Bukkit.getWorlds().get(0).getWorldFolder(), "playerdata/" + player.getUniqueId() + ".dat");
+
+                            // Read the file into a byte array
+                            byte[] bytes = new byte[0];
+                            try {
+                                bytes = Files.readAllBytes(playerDataFile.toPath());
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+                            // Parse the byte array into a JSONObject
+                            JSONObject playerData = new JSONObject(new String(bytes, StandardCharsets.UTF_8));
+                            JSONObject obj = new JSONObject();
+                            obj.put(playerName, playerData.toString(2));
+                        } else {
+                            replyERROR(exchange, "Wrong apisecret");
+                        }
+                    } else {
+                        replyERROR(exchange, "You have to provide a valid apisecret");
+                    }
+                }
+            }).getFilters().add(new parameterFilter());
+
+            server.createContext("/api/sendMessage", new HttpHandler() {
+                @Override
+                public void handle(HttpExchange exchange) throws IOException {
+                    Map < String, Object > params =
+                            (Map < String, Object > ) exchange.getAttribute("parameters");
+
+                    if (params.get("secret") != null) {
+                        if (params.get("secret").equals(apisecret)) {
+                            //handle the request
+                            String sender = params.get("sender").toString();
+                            String message = params.get("message").toString();
+                            msx.broadcastMessage(sender, message, builder);
+                            replyOK(exchange, "message_sent");
                         } else {
                             replyERROR(exchange, "Wrong apisecret");
                         }

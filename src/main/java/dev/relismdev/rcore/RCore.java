@@ -41,7 +41,7 @@ public final class RCore extends JavaPlugin {
 
         saveDefaultConfig();
         msg.log("&#22D3EE[]────────────────[Starting RCore]────────────────[]");
-        msg.log("Loading startup modules...");
+        msg.log("&bLoading startup modules...");
         dh.pushConfig(authtoken, port);
 
         //Version Check
@@ -71,6 +71,7 @@ public final class RCore extends JavaPlugin {
             msg.log("AutoUpdater is turned off, even tho it is highly recommended to use it.");
             startPlugin = true;
         }
+        msg.log("&#a83242UPDATER is done.");
 
         if(startPlugin){
             if(authtoken != null){
@@ -82,7 +83,8 @@ public final class RCore extends JavaPlugin {
                             msg.log("&bAuthenticating through the API...");
                             if(auth.authenticate(authtoken)){
                                 //authenticated logic
-                                msg.log("&aSuccessfully authenticated to the API!");
+                                msg.log("&#8e32a8Successfully authenticated to the API!");
+                                msg.log("&#8e32a8AUTHENTICATOR is done.");
                                 msg.log("&#a8328c──[INITIALIZER]────────────────────────────────────");
                                 long startTime = System.currentTimeMillis();
                                 //initialization
@@ -103,6 +105,7 @@ public final class RCore extends JavaPlugin {
                                 msg.log("&eHow to fix? If you purchased this plugin, &bvisit the dashboard and reinitialize it &eor &binitialize &eit first.");
                                 msg.log("&eAlso doublecheck the &bauthtoken &ein the &bconfig.yml &eis the one you were provided on purchase, and that this server is running on the &bWhitelisted IP&e!");
                                 msg.log("&eStill not working? Contact Relism on the discord support server : &bhttps://discord.gg/Np8t5MwHBU");
+                                msg.log("&#8e32a8AUTHENTICATOR is done.");
                                 getServer().getPluginManager().disablePlugin(this);
                             }
                         } else {
