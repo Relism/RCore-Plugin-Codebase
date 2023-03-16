@@ -11,12 +11,11 @@ public class initializer {
     public appApi api = new appApi();
     public static boolean state = false;
 
-    public boolean initialize(String authtoken, Integer port, File webFolder, String apisecret){
+    public boolean initialize(String authtoken, Integer port, File webFolder, String apisecret, String ssid){
 
         msg.log("&#a8328cInitializing the plugin...");
-        String ssid = dh.pushConfigData(authtoken, port);;
+        dh.pushConfigData(authtoken, port, ssid);;
         String ip = dh.configString("ip");
-        msg.log("&6Session ID &#a8328cfor this session is : &d" + ssid + " &#a8328c(make sure you dont share this code)");
         msg.log("&#a8328cSending initialization data to the API &e==>");
         //initial reload
         if(!rl.reload()){
@@ -31,9 +30,5 @@ public class initializer {
         msg.log("───────────────────────────────────────────────────");
 
         return state;
-    }
-
-    public void onStart(double ETA, String authtoken){
-        dh.reqAPI("https://api.relimc.com/rcore/event/onStart/?authtoken=" + authtoken + "");
     }
 }

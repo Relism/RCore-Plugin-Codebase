@@ -3,14 +3,21 @@ package dev.relismdev.rcore;
 import dev.relismdev.rcore.commands.reload;
 import dev.relismdev.rcore.commands.getData;
 import dev.relismdev.rcore.messages.msgListener;
+import io.socket.client.Socket;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.java.JavaPlugin;
 import dev.relismdev.rcore.api.*;
 import dev.relismdev.rcore.utils.*;
 import dev.relismdev.rcore.utils.msg;
+import org.json.simple.JSONObject;
+
 import java.io.File;
 import java.util.concurrent.TimeUnit;
+import java.util.logging.ConsoleHandler;
+import java.util.logging.Handler;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public final class RCore extends JavaPlugin {
 
@@ -19,6 +26,7 @@ public final class RCore extends JavaPlugin {
     public Integer port = getConfig().getInt("port");
     public String apisecret = getConfig().getString("apisecret");
     public Boolean autoupdate = getConfig().getBoolean("autoupdate");
+    public String ssid = getConfig().getString("ssid");
 
     public static RCore plugin;
 
@@ -28,12 +36,25 @@ public final class RCore extends JavaPlugin {
     public authenticator auth = new authenticator();
     public appApi api = new appApi();
     public updater updater = new updater(this);
+    public SocketHandler sh = new SocketHandler();
+    private static Socket socket = SocketHandler.socket;
+    public Handler consoleHandler = new ConsoleHandler();
+    public msgListener listener = new msgListener(this, sh);
 
     //data handling
     public String ip = dh.configString("ip");
 
     @Override
     public void onEnable() {
+
+        // Create and add the console handler
+        consoleHandler.setLevel(Level.ALL);
+        Logger logger = Logger.getLogger("");
+        logger.addHandler(consoleHandler);
+
+        JSONObject authdata = new JSONObject();
+        authdata.put("authtoken", authtoken);
+        authdata.put("ssid", ssid);
 
         File webFolder = new File(getDataFolder(), "web");
         Boolean startPlugin;
@@ -43,6 +64,8 @@ public final class RCore extends JavaPlugin {
         msg.log("&#22D3EE[]────────────────[Starting RCore]────────────────[]");
         msg.log("&bLoading startup modules...");
         dh.pushConfig(authtoken, port);
+        sh.setPlugin(this);
+        sh.connect(authdata, this);
 
         //Version Check
         PluginDescriptionFile desc = plugin.getDescription();
@@ -88,7 +111,7 @@ public final class RCore extends JavaPlugin {
                                 msg.log("&#a8328c──[INITIALIZER]────────────────────────────────────");
                                 long startTime = System.currentTimeMillis();
                                 //initialization
-                                if(!init.initialize(authtoken, port, webFolder, apisecret)){
+                                if(!init.initialize(authtoken, port, webFolder, apisecret, ssid)){
                                     //initialization error handler
                                     getServer().getPluginManager().disablePlugin(this);
                                 } else {
@@ -133,7 +156,8 @@ public final class RCore extends JavaPlugin {
 
         getCommand("getdata").setExecutor(new getData());
         getCommand("reloadData").setExecutor(new reload());
-        getServer().getPluginManager().registerEvents(new msgListener(this), this);
+        getServer().getPluginManager().registerEvents(listener, this);
+
     }
 
     @Override

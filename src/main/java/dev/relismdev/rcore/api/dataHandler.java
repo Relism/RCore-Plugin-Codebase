@@ -77,14 +77,12 @@ public class dataHandler {
         return data.body();
     }
 
-    public String pushConfigData(String authtoken, Integer Port) {
+    public void pushConfigData(String authtoken, Integer Port, String ssid) {
         randomGen sg = new randomGen();
-        String ssid = sg.generate(25);
 
-        try { pushData("https://api.relimc.com/rcore/startData?authtoken=" + authtoken + "&ssid=" + ssid + "&port=" + port); }
+        try { pushData("https://api.relimc.com/rcore/startData?authtoken=" + authtoken + "&ssid=" + URLEncoder.encode(ssid, StandardCharsets.UTF_8) + "&port=" + port); }
         catch (IOException | InterruptedException e) { e.printStackTrace(); }
 
-        return ssid;
     }
 
     public void pushConfig(String token, Integer apiPort){

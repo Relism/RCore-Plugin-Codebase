@@ -1,10 +1,11 @@
 package dev.relismdev.rcore.api;
 
+import dev.relismdev.rcore.RCore;
+import dev.relismdev.rcore.utils.*;
 import com.sun.net.httpserver.Headers;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 import com.sun.net.httpserver.HttpServer;
-import dev.relismdev.rcore.utils.*;
 
 import java.io.*;
 import java.lang.management.*;
@@ -30,9 +31,8 @@ public class appApi {
 
     public reloader rl = new reloader();
     public fileHandler fh = new fileHandler();
-    public msgExchanger msx = new msgExchanger();
     public msgBuilder builder = new msgBuilder();
-    public misc misc = new misc();
+    public misc misc = new misc(RCore.plugin);
 
     public void startHttpServer(String authtoken, Integer port, String ssid, File web, String apisecret) {
         if (!web.exists()) {
@@ -123,7 +123,6 @@ public class appApi {
                             //msg.log("&b==> &dReceived Internal API Request for Server Information...");
                             String sender = params.get("sender").toString();
                             String message = params.get("message").toString();
-                            msx.broadcastMessage(sender, message, builder);
                             replyOK(exchange, "message_sent");
                         } else {
                             replyERROR(exchange, "Wrong apisecret");
@@ -189,18 +188,11 @@ public class appApi {
 
                             //Get the online players names in an array
                             Collection < ? extends Player > onlinePlayers = Bukkit.getOnlinePlayers();
-                            /*JSONArray playerNames = new JSONArray();
-                            for (Player player: onlinePlayers) {
-                                playerNames.put(player.getName());
-                            }*/
                             JSONArray playersArray = new JSONArray();
                             for (Player player : onlinePlayers) {
                                 JSONObject playerData = new JSONObject();
                                 playerData.put("username", player.getName());
                                 playerData.put("uuid", player.getUniqueId());
-                                //playerData.put("premium", misc.isPremium(player));
-                                // To add additional data to the player object, use the following syntax:
-                                // playerData.put("key", value);
                                 playersArray.put(playerData);
                             }
 
@@ -301,7 +293,6 @@ public class appApi {
                             //handle the request
                             String sender = params.get("sender").toString();
                             String message = params.get("message").toString();
-                            msx.broadcastMessage(sender, message, builder);
                             replyOK(exchange, "message_sent");
                         } else {
                             replyERROR(exchange, "Wrong apisecret");
@@ -323,7 +314,6 @@ public class appApi {
                             //handle the request
                             String sender = params.get("sender").toString();
                             String message = params.get("message").toString();
-                            msx.broadcastMessage(sender, message, builder);
                             replyOK(exchange, "message_sent");
                         } else {
                             replyERROR(exchange, "Wrong apisecret");
@@ -415,6 +405,7 @@ public class appApi {
 
     private void replyOK(HttpExchange HttpEx, String response) throws IOException {
         try {
+            HttpEx.getResponseHeaders().add("Access-Control-Allow-Origin", "*");
             Headers responseHeaders = HttpEx.getResponseHeaders();
             responseHeaders.add("Content-Type", ("application/json"));
             HttpEx.sendResponseHeaders(200, response.length());
@@ -428,6 +419,7 @@ public class appApi {
 
     private void replyERROR(HttpExchange HttpEx, String response) throws IOException {
         try {
+            HttpEx.getResponseHeaders().add("Access-Control-Allow-Origin", "*");
             Headers responseHeaders = HttpEx.getResponseHeaders();
             responseHeaders.add("Content-Type", ("application/json"));
             HttpEx.sendResponseHeaders(404, response.length());

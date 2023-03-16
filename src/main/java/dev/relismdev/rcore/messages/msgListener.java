@@ -1,31 +1,33 @@
 package dev.relismdev.rcore.messages;
 
-import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
-import java.util.concurrent.*;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.logging.Handler;
+import java.util.logging.LogRecord;
 
-import okhttp3.OkHttpClient;
+import dev.relismdev.rcore.api.dataHandler;
+import io.socket.client.Socket;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerChatEvent;
-import dev.relismdev.rcore.api.*;
-import dev.relismdev.rcore.utils.msg;
 import org.bukkit.plugin.Plugin;
-import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
+
+import dev.relismdev.rcore.api.SocketHandler;
 
 public class msgListener implements Listener {
 
     private final Plugin plugin;
-    public msgListener(Plugin plugin) {
+    private static Socket socket = SocketHandler.socket;
+
+    public msgListener(Plugin plugin, SocketHandler sh) {
         this.plugin = plugin;
     }
+
     private ExecutorService executor = Executors.newFixedThreadPool(10);
-    dataHandler dh = new dataHandler();
-    msgExchanger msx = new msgExchanger();
+    private dataHandler dh = new dataHandler();
 
     @EventHandler
     public void onPlayerChat(PlayerChatEvent event) {
@@ -47,24 +49,31 @@ public class msgListener implements Listener {
         }
     }
 
+    private Handler consoleListener = new Handler() {
+        @Override
+        public void publish(LogRecord record) {
+            String message = record.getMessage();
+            String level = record.getLevel().toString();
+            String formatted = level + " " + message;
+            Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
+                socket.emit("forward", "endpoint1", "ciao");
+            });
+        }
+
+        @Override
+        public void flush() {
+            // No implementation needed
+        }
+
+        @Override
+        public void close() throws SecurityException {
+            // No implementation needed
+        }
+    };
+
     public String translateMessage(String message, String language) throws ParseException {
         String authtoken = plugin.getConfig().getString("authtoken");
         return((String) dh.toObject(dh.reqAPI("https://api.relimc.com/rcore/translate/?authtoken=" + authtoken + "&text=" + message + "&targetLanguage=" + language)).get("text"));
     }
 
-    /*public void onPlayerChat(PlayerChatEvent event) {
-        executor.execute(() -> {
-            msx.pushMessage(event);
-            try {
-                msg.log((String) translateMessage(URLEncoder.encode(event.getMessage(), StandardCharsets.UTF_8), "en-US").get("text"));
-            } catch (ParseException e){
-                e.printStackTrace();
-            }
-        });
-    }*/
-
-    /*public JSONObject translateMessage(String message, String language) throws ParseException {
-        String authtoken = plugin.getConfig().getString("authtoken");
-        return(dh.toObject(dh.reqAPI("https://api.relimc.com/rcore/translate/?authtoken=" + authtoken + "&text=" + message + "&targetLanguage=" + language)));
-    }*/
 }

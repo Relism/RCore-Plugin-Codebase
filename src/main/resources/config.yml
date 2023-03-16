@@ -1,8 +1,11 @@
 # -----------------------------------------
 # Plugin activation :
+# - authtoken: Only set this once when you have just installed the plugin.
+#   ↳ This will be auto-updated each time the server restarts so dont touch it after setting it up.
 # - authtoken: Set this as the authtoken you were giving on purchase.
 # - accept-terms: RCore handles your data as stated in the docs (apidocs.relimc.com)
 #   ↳ By setting this as true you are indicating your agreement to our api terms.
+ssid:
 authtoken:
 accept-terms:
 # -----------------------------------------

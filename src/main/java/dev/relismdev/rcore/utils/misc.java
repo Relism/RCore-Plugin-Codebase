@@ -1,5 +1,6 @@
 package dev.relismdev.rcore.utils;
 
+import dev.relismdev.rcore.RCore;
 import org.bukkit.entity.Player;
 
 import java.io.IOException;
@@ -7,6 +8,11 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 
 public class misc {
+
+    private RCore plugin;
+    public misc(RCore plugin){
+        this.plugin = plugin;
+    }
     //Miscellanous stuff
     public boolean isPremium(Player player) {
         // check if the player is online
