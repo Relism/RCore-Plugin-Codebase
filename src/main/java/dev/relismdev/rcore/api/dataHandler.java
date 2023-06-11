@@ -15,7 +15,7 @@ import java.nio.charset.StandardCharsets;
 
 public class dataHandler {
 
-    public static String authtoken;
+    public static String ssid;
     public static Integer port;
     public static JSONObject configData = null;
 
@@ -23,7 +23,7 @@ public class dataHandler {
         HttpResponse<String> data = null;
         JSONObject jsonData = null;
 
-        try { data = getData("https://api.relimc.com/rcore/getConfig?authtoken=" + authtoken);
+        try { data = getData("https://api.relimc.com/rcore/getConfig?ssid=" + ssid);
             if(!data.toString().equals("{}")){
                 try { jsonData = toObject(data.body()); }
                 catch (ParseException e) { e.printStackTrace(); }
@@ -77,21 +77,21 @@ public class dataHandler {
         return data.body();
     }
 
-    public void pushConfigData(String authtoken, Integer Port, String ssid) {
+    /*public void pushConfigData(String authtoken, Integer Port, String ssid) {
         randomGen sg = new randomGen();
 
         try { pushData("https://api.relimc.com/rcore/startData?authtoken=" + authtoken + "&ssid=" + URLEncoder.encode(ssid, StandardCharsets.UTF_8) + "&port=" + port); }
         catch (IOException | InterruptedException e) { e.printStackTrace(); }
 
-    }
+    }*/
 
-    public void pushConfig(String token, Integer apiPort){
-        authtoken = token;
+    public void pushConfig(String pssid, Integer apiPort){
+        ssid = pssid;
         port = apiPort;
     }
 
-    public String fetchToken(){
-        return authtoken;
+    public String fetchssid(){
+        return ssid;
     }
 
     //parser

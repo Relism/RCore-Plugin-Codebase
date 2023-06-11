@@ -13,3 +13,6 @@ commands:
   reloadData:
     description: command2
     usage: /<command>
+  devstats:
+    description: blah blah
+    usage: /<command>

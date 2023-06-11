@@ -20,8 +20,9 @@ public class reloader {
             msg.log("&e<== &#a8328cStarting to download data from the API");
             long startTime = System.currentTimeMillis();
             dh.downloadConfig();
+            msg.log(dh.configData.toJSONString());
             long endTime = System.currentTimeMillis();
-            if(dh.configString("authtoken") != null){
+            if(dh.configString("client") != null){
                 state = true;
                 JSONObject data = dh.configData;
                 Integer dataEntries = data.size() - 1;

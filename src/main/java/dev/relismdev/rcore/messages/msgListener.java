@@ -2,78 +2,53 @@ package dev.relismdev.rcore.messages;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.logging.Handler;
-import java.util.logging.LogRecord;
-
-import dev.relismdev.rcore.api.dataHandler;
 import io.socket.client.Socket;
-import org.bukkit.Bukkit;
-import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerChatEvent;
-import org.bukkit.plugin.Plugin;
-import org.json.simple.parser.ParseException;
+import org.json.simple.JSONObject;
 
 import dev.relismdev.rcore.api.SocketHandler;
 
 public class msgListener implements Listener {
 
-    private final Plugin plugin;
-    private static Socket socket = SocketHandler.socket;
+    //private final Plugin plugin;
 
-    public msgListener(Plugin plugin, SocketHandler sh) {
+    /*public msgListener(Plugin plugin, SocketHandler sh) {
         this.plugin = plugin;
-    }
+    }*/
 
+    public static Socket socket = SocketHandler.socket;
     private ExecutorService executor = Executors.newFixedThreadPool(10);
-    private dataHandler dh = new dataHandler();
 
     @EventHandler
     public void onPlayerChat(PlayerChatEvent event) {
-        String senderLanguage = event.getPlayer().getMetadata("language").get(0).asString();
-        String message = event.getMessage();
-        for (Player p : Bukkit.getOnlinePlayers()) {
-            String receiverLanguage = p.getMetadata("language").get(0).asString();
-            if (!receiverLanguage.equals(senderLanguage)) {
-                event.setCancelled(true);
-                executor.execute(() -> {
-                    try {
-                        String translatedMessage = translateMessage(message, receiverLanguage);
-                        p.sendMessage(translatedMessage);
-                    } catch (ParseException e) {
-                        e.printStackTrace();
-                    }
-                });
-            }
-        }
+        // Create a new JSONObject to hold player information
+        JSONObject playerInfo = new JSONObject();
+
+        // Add the player's name to the playerInfo object
+        playerInfo.put("name", event.getPlayer().getName());
+        playerInfo.put("uuid", event.getPlayer().getUniqueId());
+
+        // Add the player's world name to the playerInfo object
+        playerInfo.put("world", event.getPlayer().getWorld().getName());
+
+        // Add the player's coordinates to the playerInfo object
+        JSONObject coordinates = new JSONObject();
+        coordinates.put("x", Math.round(event.getPlayer().getLocation().getX()));
+        coordinates.put("y", Math.round(event.getPlayer().getLocation().getY()));
+        coordinates.put("z", Math.round(event.getPlayer().getLocation().getZ()));
+        playerInfo.put("coordinates", coordinates);
+
+        // Create a new JSONObject to hold both the player and content information
+        JSONObject data = new JSONObject();
+
+        // Add the player object and content object to the data object
+        data.put("player", playerInfo);
+        data.put("message", event.getMessage());
+
+        executor.execute(() -> {
+            socket.emit("forward", "rcore-ds", "discord-incoming", data);
+        });
     }
-
-    private Handler consoleListener = new Handler() {
-        @Override
-        public void publish(LogRecord record) {
-            String message = record.getMessage();
-            String level = record.getLevel().toString();
-            String formatted = level + " " + message;
-            Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
-                socket.emit("forward", "endpoint1", "ciao");
-            });
-        }
-
-        @Override
-        public void flush() {
-            // No implementation needed
-        }
-
-        @Override
-        public void close() throws SecurityException {
-            // No implementation needed
-        }
-    };
-
-    public String translateMessage(String message, String language) throws ParseException {
-        String authtoken = plugin.getConfig().getString("authtoken");
-        return((String) dh.toObject(dh.reqAPI("https://api.relimc.com/rcore/translate/?authtoken=" + authtoken + "&text=" + message + "&targetLanguage=" + language)).get("text"));
-    }
-
 }

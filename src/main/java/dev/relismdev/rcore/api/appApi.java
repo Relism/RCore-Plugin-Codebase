@@ -31,7 +31,6 @@ public class appApi {
 
     public reloader rl = new reloader();
     public fileHandler fh = new fileHandler();
-    public msgBuilder builder = new msgBuilder();
     public misc misc = new misc(RCore.plugin);
 
     public void startHttpServer(String authtoken, Integer port, String ssid, File web, String apisecret) {
@@ -96,6 +95,7 @@ public class appApi {
                         case "png":
                             return "image/png";
                         case "jpeg":
+                            return "image/jpeg";
                         case "jpg":
                             return "image/jpeg";
                         default:

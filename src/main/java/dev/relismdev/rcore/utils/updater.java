@@ -27,23 +27,24 @@ public class updater {
     public boolean update(String ver) {
         boolean result = false;
         try {
-            Float version = Float.valueOf(ver);
-            Float latestVersion = Float.valueOf((String) fetchLatest().get("version"));
-            if(latestVersion > version){
+            String version = ver;
+            String latestVersion = (String) fetchLatest().get("date");
+            msg.log(latestVersion);
+            if(toUpdate(ver)){
                 // Download the new plugin JAR file
                 msg.log("Starting to download and replace RCore v" + latestVersion + " :");
-                File pluginFile = new File(plugin.getDataFolder().getParentFile(), "RCoreTemp.jar");
-                URL url = new URL("https://api.relimc.com/rcore/plugin/releases/latest/download/RCore.jar");
+                String latestPluginName = "RCore-" + latestVersion + ".jar";
+                File pluginFile = new File(plugin.getDataFolder().getParentFile(), latestPluginName);
+                URL url = new URL("https://evalfolder.relism.repl.co/plugin/releases/download/" + latestVersion);
                 FileUtils.copyURLToFile(url, pluginFile);
                 // Replace the old plugin JAR file with the new one
                 File oldPluginFile = new File(plugin.getDataFolder().getParentFile(), plugin.getDescription().getName() + ".jar");
                 if (oldPluginFile.exists()) {
                     oldPluginFile.delete();
                 }
-                pluginFile.renameTo(oldPluginFile);
                 msg.log("Download completed.");
                 // Restart the server
-                msg.log("Successfully updated the plugin, " + version + " -> " + latestVersion);
+                msg.log("Successfully updated the plugin, " + version + " -> " + latestPluginName);
                 result = true;
             } else {
                 msg.log("Nothing to update. Current : " + version + " Latest : " + latestVersion);
@@ -60,30 +61,29 @@ public class updater {
     public JSONObject fetchLatest(){
         JSONObject version = null;
         try {
-            version = dh.toObject(dh.reqAPI("https://api.relimc.com/rcore/plugin/releases/latest"));
+            version = dh.toObject(dh.reqAPI("https://evalfolder.relism.repl.co/plugin/releases/latest"));
         } catch (ParseException e ) { e.printStackTrace(); }
         return version;
     }
 
     public boolean toUpdate(String ver){
-        Float version = Float.valueOf(ver);
-        Float newVersion = Float.valueOf((String) fetchLatest().get("version"));
-        return newVersion > version;
+        String newVersion = (String) fetchLatest().get("date");
+        return !ver.equals(newVersion);
     }
 
     public void patchStatus(String ver){
         msg.log("&#a83242Checking the RCore version...");
-        Float current = Float.valueOf(ver);
-        Float latest = Float.valueOf((String) fetchLatest().get("version"));
+        String current = ver;
+        String latest = (String) fetchLatest().get("date");
         msg.log("&6Current : &d" + current);
         msg.log("&6Latest : &d" + latest);
         if(latest.equals(current)){
             //plugin is up to date
             msg.log("&#a83242Up to date ! Running RCore v" + current);
         } else {
-            Float behind = (latest - current)*10;
+            //Float behind = (latest - current)*10;
             msg.log("You are not running the latest RCore version !");
-            msg.log("You are : " + behind + " build(s) behind!");
+            //msg.log("You are : " + behind + " build(s) behind!");
         }
     }
 }

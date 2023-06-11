@@ -1,10 +1,13 @@
 package dev.relismdev.rcore;
 
+import dev.relismdev.rcore.commands.devStats;
 import dev.relismdev.rcore.commands.reload;
 import dev.relismdev.rcore.commands.getData;
+import dev.relismdev.rcore.messages.msgBuilder;
 import dev.relismdev.rcore.messages.msgListener;
 import io.socket.client.Socket;
 import org.bukkit.Bukkit;
+import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.java.JavaPlugin;
 import dev.relismdev.rcore.api.*;
@@ -27,26 +30,23 @@ public final class RCore extends JavaPlugin {
     public String apisecret = getConfig().getString("apisecret");
     public Boolean autoupdate = getConfig().getBoolean("autoupdate");
     public String ssid = getConfig().getString("ssid");
+    public String apinode = getConfig().getString("node");
 
     public static RCore plugin;
 
     //class handling
     public dataHandler dh = new dataHandler();
     public initializer init = new initializer();
-    public authenticator auth = new authenticator();
     public appApi api = new appApi();
     public updater updater = new updater(this);
     public SocketHandler sh = new SocketHandler();
     private static Socket socket = SocketHandler.socket;
     public Handler consoleHandler = new ConsoleHandler();
-    public msgListener listener = new msgListener(this, sh);
-
-    //data handling
-    public String ip = dh.configString("ip");
+    public msgListener listener = new msgListener();
+    public msgBuilder builder = new msgBuilder();
 
     @Override
     public void onEnable() {
-
         // Create and add the console handler
         consoleHandler.setLevel(Level.ALL);
         Logger logger = Logger.getLogger("");
@@ -63,13 +63,10 @@ public final class RCore extends JavaPlugin {
         saveDefaultConfig();
         msg.log("&#22D3EE[]────────────────[Starting RCore]────────────────[]");
         msg.log("&bLoading startup modules...");
-        dh.pushConfig(authtoken, port);
-        sh.setPlugin(this);
-        sh.connect(authdata, this);
+        //dh.pushConfig(getConfig().getString("ssid"), port);
 
         //Version Check
-        PluginDescriptionFile desc = plugin.getDescription();
-        String version = desc.getVersion();
+        String version = getFile().getName().replaceAll(".*(-\\d{4}-\\d{2}-\\d{2})\\..*", "$1");
         //Setup Check
         msg.log("&#a83242──[UPDATER]────────────────────────────────────────");
         updater.patchStatus(version);
@@ -101,35 +98,19 @@ public final class RCore extends JavaPlugin {
                 if(accept_terms != null && accept_terms.equals("true")){
                     if(port != null && port != 0){
                         if(apisecret != null){
-                            //authentication
-                            msg.log("&#8e32a8──[AUTHENTICATOR]──────────────────────────────────");
-                            msg.log("&bAuthenticating through the API...");
-                            if(auth.authenticate(authtoken)){
-                                //authenticated logic
-                                msg.log("&#8e32a8Successfully authenticated to the API!");
-                                msg.log("&#8e32a8AUTHENTICATOR is done.");
-                                msg.log("&#a8328c──[INITIALIZER]────────────────────────────────────");
-                                long startTime = System.currentTimeMillis();
-                                //initialization
-                                if(!init.initialize(authtoken, port, webFolder, apisecret, ssid)){
-                                    //initialization error handler
-                                    getServer().getPluginManager().disablePlugin(this);
-                                } else {
-                                    //initialization success logic
-                                    long endTime = System.currentTimeMillis();
-                                    double ETA = (endTime - startTime) / 1000;
-                                    msg.log("&aInitialization Complete! Process took : &b" + ETA + " &asecond(s)");
-                                    msg.log("───────────────────────────────────────────────────");
-                                    //init.onStart(ETA, authtoken);
-                                }
-                            } else {
-                                //non-authenticated logic
-                                msg.log("&cCouldnt authenticate correctly to the API, disabling the plugin.");
-                                msg.log("&eHow to fix? If you purchased this plugin, &bvisit the dashboard and reinitialize it &eor &binitialize &eit first.");
-                                msg.log("&eAlso doublecheck the &bauthtoken &ein the &bconfig.yml &eis the one you were provided on purchase, and that this server is running on the &bWhitelisted IP&e!");
-                                msg.log("&eStill not working? Contact Relism on the discord support server : &bhttps://discord.gg/Np8t5MwHBU");
-                                msg.log("&#8e32a8AUTHENTICATOR is done.");
+                            sh.connect(authdata, this);
+                            msg.log("&#a8328c──[INITIALIZER]────────────────────────────────────");
+                            long startTime = System.currentTimeMillis();
+                            //initialization
+                            if(!init.initialize(authtoken, port, webFolder, apisecret, ssid, apinode)){
+                                //initialization error handler
                                 getServer().getPluginManager().disablePlugin(this);
+                            } else {
+                                //initialization success logic
+                                long endTime = System.currentTimeMillis();
+                                double ETA = (endTime - startTime) / 1000;
+                                msg.log("&aInitialization Complete! Process took : &b" + ETA + " &asecond(s)");
+                                msg.log("───────────────────────────────────────────────────");
                             }
                         } else {
                             //no apisecret logic
@@ -156,6 +137,7 @@ public final class RCore extends JavaPlugin {
 
         getCommand("getdata").setExecutor(new getData());
         getCommand("reloadData").setExecutor(new reload());
+        getCommand("devstats").setExecutor(new devStats());
         getServer().getPluginManager().registerEvents(listener, this);
 
     }
@@ -165,5 +147,9 @@ public final class RCore extends JavaPlugin {
 
         msg.log("&#22D3EE[]────────────────[Stopping RCore]────────────────[]");
 
+    }
+
+    public Plugin getInstance() {
+        return this;
     }
 }

@@ -14,7 +14,7 @@ import java.net.URISyntaxException;
 public class SocketHandler {
 
     public static Socket socket;
-    private Plugin plugin;
+    //private final Map<String, Map<String, List<Consumer<JSONObject>>>> listeners = new HashMap<>();
 
     public SocketHandler() {
         try {
@@ -22,18 +22,18 @@ public class SocketHandler {
             options.reconnection = true;
             options.reconnectionDelay = 1000;
             options.reconnectionAttempts = Integer.MAX_VALUE;
-            this.socket = IO.socket("https://server.relism.repl.co", options);
+            socket = IO.socket("https://server.relism.repl.co", options);
         } catch (URISyntaxException e) {
             e.printStackTrace();
         }
     }
 
-    public void connect(JSONObject data, Plugin plugin) {
+    public void connect(JSONObject authdata, Plugin plugin) {
         socket.on(Socket.EVENT_CONNECT, new Emitter.Listener() {
             @Override
             public void call(Object... args) {
                 msg.log("Connected to server");
-                socket.emit("authenticate", data);
+                socket.emit("authenticate", authdata);
             }
         });
 
@@ -72,12 +72,7 @@ public class SocketHandler {
                 }
             }
         });
-
         socket.connect();
-    }
-
-    public void setPlugin(Plugin plugin) {
-        this.plugin = plugin;
     }
 
 }
