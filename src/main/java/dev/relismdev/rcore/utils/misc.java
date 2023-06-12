@@ -2,6 +2,9 @@ package dev.relismdev.rcore.utils;
 
 import dev.relismdev.rcore.RCore;
 import org.bukkit.entity.Player;
+import org.json.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 
 import java.io.IOException;
 import java.net.HttpURLConnection;
@@ -10,9 +13,6 @@ import java.net.URL;
 public class misc {
 
     private RCore plugin;
-    public misc(RCore plugin){
-        this.plugin = plugin;
-    }
     //Miscellanous stuff
     public boolean isPremium(Player player) {
         // check if the player is online
@@ -42,5 +42,17 @@ public class misc {
             // the player is not online, return false
             return false;
         }
+    }
+    public JSONObject strToObj(String data){
+        JSONObject json = null;
+        try {
+            JSONParser parser = new JSONParser();
+            json = (JSONObject) parser.parse(data);
+
+            return json;
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return json;
     }
 }

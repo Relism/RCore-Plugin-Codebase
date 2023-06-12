@@ -19,7 +19,6 @@ public class reload implements CommandExecutor {
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
 
         rl.reload();
-        socket.emit("forward", "endpoint1", "ciao");
         return true;
 
     }

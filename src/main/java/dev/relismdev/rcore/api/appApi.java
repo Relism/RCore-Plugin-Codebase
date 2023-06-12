@@ -31,9 +31,9 @@ public class appApi {
 
     public reloader rl = new reloader();
     public fileHandler fh = new fileHandler();
-    public misc misc = new misc(RCore.plugin);
+    public misc misc = new misc();
 
-    public void startHttpServer(String authtoken, Integer port, String ssid, File web, String apisecret) {
+    public void startHttpServer(Integer port, String ssid, File web, String apisecret) {
         if (!web.exists()) {
             web.mkdir();
         }

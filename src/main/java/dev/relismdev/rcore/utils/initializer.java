@@ -13,21 +13,18 @@ public class initializer {
     public appApi api = new appApi();
     public static boolean state = false;
     public static Socket socket = SocketHandler.socket;
+    public static nodePointer pointer = new nodePointer();
 
-    public boolean initialize(String authtoken, Integer port, File webFolder, String apisecret, String ssid, String node){
+    public boolean initialize(Integer port, File webFolder, String apisecret, String ssid){
 
         msg.log("&#a8328cInitializing the plugin...");
-
-        if(node.equals("auto")){
-            msg.log("&#a8328cNode set to auto, testing all the mirrors now.");
-        }
 
         String ip = dh.configString("ip");
         msg.log("&#a8328cSending initialization data to the API &e==>");
         state = true;
         msg.log("&#32a846──[INTERNAL API]───────────────────────────────────");
         msg.log("&#32a846Initializing the Internal API...");
-        api.startHttpServer(authtoken, port, ssid, webFolder, apisecret);
+        api.startHttpServer(port, ssid, webFolder, apisecret);
         msg.log("&#32a846Started the Internal API on ==> : &dhttp://" + dh.configString("ip") + ":" + port);
         msg.log("───────────────────────────────────────────────────");
 

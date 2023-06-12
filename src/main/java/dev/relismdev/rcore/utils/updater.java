@@ -10,7 +10,7 @@ import org.apache.commons.io.FileUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.Plugin;
 import dev.relismdev.rcore.api.*;
-import org.json.simple.JSONObject;
+import org.json.JSONObject;
 import org.json.simple.parser.ParseException;
 
 public class updater {
@@ -60,9 +60,7 @@ public class updater {
 
     public JSONObject fetchLatest(){
         JSONObject version = null;
-        try {
-            version = dh.toObject(dh.reqAPI("https://evalfolder.relism.repl.co/plugin/releases/latest"));
-        } catch (ParseException e ) { e.printStackTrace(); }
+        version = dh.reqAPI("https://evalfolder.relism.repl.co/plugin/releases/latest");
         return version;
     }
 

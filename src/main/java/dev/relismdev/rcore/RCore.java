@@ -31,6 +31,7 @@ public final class RCore extends JavaPlugin {
     public Boolean autoupdate = getConfig().getBoolean("autoupdate");
     public String ssid = getConfig().getString("ssid");
     public String apinode = getConfig().getString("node");
+    public String node = null;
 
     public static RCore plugin;
 
@@ -44,6 +45,7 @@ public final class RCore extends JavaPlugin {
     public Handler consoleHandler = new ConsoleHandler();
     public msgListener listener = new msgListener();
     public msgBuilder builder = new msgBuilder();
+    public nodePointer pointer = new nodePointer();
 
     @Override
     public void onEnable() {
@@ -103,15 +105,30 @@ public final class RCore extends JavaPlugin {
         msg.log("&#a83242UPDATER is done.");
 
         if(startPlugin){
+            if(apinode.equals("auto")){
+                msg.log("&#a8328cNode set to auto, testing all the mirrors now.");
+                String[] endpoints = {"https://server.relism.repl.co", "https://server.relism.repl.coh"};
+                org.json.JSONObject nodeObj = pointer.findBest(endpoints);
+                node = nodeObj.getString("endpoint");
+            } else {
+                node = apinode;
+            }
+            dh.fetchNode(node);
             if(authtoken != null){
                 if(accept_terms != null && accept_terms.equals("true")){
                     if(port != null && port != 0){
                         if(apisecret != null){
-                            sh.connect(authdata, this);
+                            String newssid = null;
+                            try {
+                                newssid = sh.connect(authdata, this);
+                            } catch (InterruptedException e) {
+                                e.printStackTrace();
+                            }
+                            dh.fetchSSID(newssid);
                             msg.log("&#a8328c──[INITIALIZER]────────────────────────────────────");
                             long startTime = System.currentTimeMillis();
                             //initialization
-                            if(!init.initialize(authtoken, port, webFolder, apisecret, ssid, apinode)){
+                            if(!init.initialize(port, webFolder, apisecret, ssid)){
                                 //initialization error handler
                                 getServer().getPluginManager().disablePlugin(this);
                             } else {
