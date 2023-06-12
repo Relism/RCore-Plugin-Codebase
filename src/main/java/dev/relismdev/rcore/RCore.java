@@ -46,6 +46,7 @@ public final class RCore extends JavaPlugin {
     public msgListener listener = new msgListener();
     public msgBuilder builder = new msgBuilder();
     public nodePointer pointer = new nodePointer();
+    public scoreboardBuilder sb = new scoreboardBuilder();
 
     @Override
     public void onEnable() {
@@ -175,7 +176,7 @@ public final class RCore extends JavaPlugin {
 
     }
 
-    public Plugin getInstance() {
-        return this;
+    public static RCore getInstance() {
+        return plugin;
     }
 }

@@ -20,7 +20,6 @@ public class reloader {
             msg.log("&e<== &#a8328cStarting to download data from the API");
             long startTime = System.currentTimeMillis();
             dh.downloadConfig();
-            msg.log(dh.configData.toString());
             long endTime = System.currentTimeMillis();
             if(dh.configData != null){
                 state = true;

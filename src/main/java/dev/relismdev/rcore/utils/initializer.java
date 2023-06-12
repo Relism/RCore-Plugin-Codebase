@@ -15,7 +15,7 @@ public class initializer {
     public static Socket socket = SocketHandler.socket;
     public static nodePointer pointer = new nodePointer();
 
-    public boolean initialize(Integer port, File webFolder, String apisecret, String ssid){
+    public boolean initialize(int port, File webFolder, String apisecret, String ssid){
 
         msg.log("&#a8328cInitializing the plugin...");
 
