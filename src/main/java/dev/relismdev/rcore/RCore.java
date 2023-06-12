@@ -62,6 +62,15 @@ public final class RCore extends JavaPlugin {
 
         saveDefaultConfig();
         msg.log("&#22D3EE[]────────────────[Starting RCore]────────────────[]");
+        msg.log("&bLoading softdepends...");
+
+        //PAPI
+        if (Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null) {
+            msg.log("&bHooked into PlaceholderAPI!");
+        } else {
+            msg.log("&cCouldnt find PlaceholderAPI, continuing without it");
+        }
+
         msg.log("&bLoading startup modules...");
         //dh.pushConfig(getConfig().getString("ssid"), port);
 

@@ -6,6 +6,7 @@ prefix: RCore
 authors: [Relism]
 description: just a sync plugin to mongodb
 website: panel.relimc.com
+softdepend: [PlaceholderAPI]
 commands:
   getdata:
     description: command1

@@ -1,5 +1,6 @@
 package dev.relismdev.rcore.commands;
 
+import dev.relismdev.rcore.utils.msg;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.command.Command;
@@ -19,24 +20,16 @@ import org.bukkit.scoreboard.Scoreboard;
 import org.json.JSONObject;
 
 public class devStats implements CommandExecutor {
-    private BossBar bossBar;
-    private boolean bossBarVisible = false;
+    private BossBar bossBar = Bukkit.createBossBar("Title", BarColor.RED, BarStyle.SOLID);
     private Timer timer;
     private scoreboardBuilder builder = new scoreboardBuilder();
-    private Scoreboard scoreboard;
+    private Scoreboard[] scoreboards;
 
-    public devStats() {
-        this.bossBar = Bukkit.createBossBar("Title", BarColor.RED, BarStyle.SOLID);
-    }
+    private boolean bossBarVisible = false;
 
     private void updateBossBarData(Player player) {
-        World world = player.getWorld(); // get the world that the player is currently in
-        long tickTime = world.getTime() % 24000; // get the current tick time
-        double progress = tickTime / 24000.0; // calculate the progress as a value between 0 and 1
-        String timeOfDay = String.format("%02d:%02d", (int)(tickTime * 24 / 24000.0), (int)((tickTime * 24 * 60 / 24000.0) % 60)); // convert the tick time to a time of day string
-        String title = world.getName() + " - " + timeOfDay; // concatenate the world name and time of day strings
-        bossBar.setTitle(title); // set the boss bar title
-        bossBar.setProgress(progress); // set the boss bar progress
+        bossBar.setTitle("");
+        bossBar.setProgress(1);
     }
 
     @Override
@@ -48,12 +41,87 @@ public class devStats implements CommandExecutor {
 
         Player player = (Player) sender;
         JSONObject config = new JSONObject("{\n" +
-                "  \"title\": \"My Scoreboard\",\n" +
-                "  \"1\": 10,\n" +
-                "  \"2\": 20,\n" +
-                "  \"3\": 30\n" +
+                "  \"title\": [\n" +
+                "    \"&lA\",\n" +
+                "    \"&lAn\",\n" +
+                "    \"&lAni\",\n" +
+                "    \"&lAnim\",\n" +
+                "    \"&lAnima\",\n" +
+                "    \"&lAnimat\",\n" +
+                "    \"&lAnimate\",\n" +
+                "    \"&lAnimated\",\n" +
+                "    \"&lAnimated \",\n" +
+                "    \"&lAnimated S\",\n" +
+                "    \"&lAnimated Sc\",\n" +
+                "    \"&lAnimated Sco\",\n" +
+                "    \"&lAnimated Scor\",\n" +
+                "    \"&lAnimated Score\",\n" +
+                "    \"&lAnimated Scoreb\",\n" +
+                "    \"&lAnimated Scorebo\",\n" +
+                "    \"&lAnimated Scoreboa\",\n" +
+                "    \"&lAnimated Scoreboar\",\n" +
+                "    \"&lAnimated Scoreboard\",\n" +
+                "    \"&c&lAnimated Scoreboard\",\n" +
+                "    \"&lAnimated Scoreboard\",\n" +
+                "    \"&c&lAnimated Scoreboard\",\n" +
+                "    \"&lAnimated Scoreboard\",\n" +
+                "    \"&c&lAnimated Scoreboard\"\n" +
+                "  ],\n" +
+                "  \"1\": [\n" +
+                "    \"&a&lPlayer Kills: %player_name%\",\n" +
+                "    \"&a&lPlayer Kills: %player_name%\",\n" +
+                "    \"&a&lPlayer Kills: %player_name%\",\n" +
+                "    \"&a&lPlayer Kills: %player_name%\",\n" +
+                "    \"&a&lPlayer Kills: %player_name%\",\n" +
+                "    \"&a&lPlayer Kills: %player_name%\",\n" +
+                "    \"&e&lPlayer Deaths: 1\",\n" +
+                "    \"&e&lPlayer Deaths: 1\",\n" +
+                "    \"&e&lPlayer Deaths: 1\",\n" +
+                "    \"&e&lPlayer Deaths: 1\",\n" +
+                "    \"&e&lPlayer Deaths: 1\",\n" +
+                "    \"&e&lPlayer Deaths: 1\",\n" +
+                "    \"&c&lPlayer Score: 100\",\n" +
+                "    \"&c&lPlayer Score: 100\",\n" +
+                "    \"&c&lPlayer Score: 100\",\n" +
+                "    \"&c&lPlayer Score: 100\",\n" +
+                "    \"&c&lPlayer Score: 100\",\n" +
+                "    \"&c&lPlayer Score: 100\",\n" +
+                "    \"&6&lPlayer Level: 5\",\n" +
+                "    \"&6&lPlayer Level: 5\",\n" +
+                "    \"&6&lPlayer Level: 5\",\n" +
+                "    \"&6&lPlayer Level: 5\",\n" +
+                "    \"&6&lPlayer Level: 5\",\n" +
+                "    \"&6&lPlayer Level: 5\"\n" +
+                "  ],\n" +
+                "  \"2\": [\n" +
+                "    \"&a&lTeam Kills: 10\",\n" +
+                "    \"&a&lTeam Kills: 10\",\n" +
+                "    \"&a&lTeam Kills: 10\",\n" +
+                "    \"&a&lTeam Kills: 10\",\n" +
+                "    \"&a&lTeam Kills: 10\",\n" +
+                "    \"&a&lTeam Kills: 10\",\n" +
+                "    \"&e&lTeam Deaths: 5\",\n" +
+                "    \"&e&lTeam Deaths: 5\",\n" +
+                "    \"&e&lTeam Deaths: 5\",\n" +
+                "    \"&e&lTeam Deaths: 5\",\n" +
+                "    \"&e&lTeam Deaths: 5\",\n" +
+                "    \"&e&lTeam Deaths: 5\",\n" +
+                "    \"&c&lTeam Score: 500\",\n" +
+                "    \"&c&lTeam Score: 500\",\n" +
+                "    \"&c&lTeam Score: 500\",\n" +
+                "    \"&c&lTeam Score: 500\",\n" +
+                "    \"&c&lTeam Score: 500\",\n" +
+                "    \"&c&lTeam Score: 500\",\n" +
+                "    \"&6&lTeam Members: 5\",\n" +
+                "    \"&6&lTeam Members: 5\",\n" +
+                "    \"&6&lTeam Members: 5\",\n" +
+                "    \"&6&lTeam Members: 5\",\n" +
+                "    \"&6&lTeam Members: 5\",\n" +
+                "    \"&6&lTeam Members: 5\"\n" +
+                "  ]\n" +
                 "}");
-        scoreboard = builder.build(config);
+
+        scoreboards = builder.build(config, player);
 
         if (bossBarVisible) {
             bossBarVisible = false;
@@ -61,6 +129,7 @@ public class devStats implements CommandExecutor {
             if (timer != null) {
                 timer.cancel();
             }
+            player.setScoreboard(Bukkit.getScoreboardManager().getNewScoreboard());
             player.sendMessage("DevStats boss bar and scoreboard hidden.");
         } else {
             bossBarVisible = true;
@@ -70,12 +139,15 @@ public class devStats implements CommandExecutor {
             }
             timer = new Timer();
             timer.scheduleAtFixedRate(new TimerTask() {
+                int sb = 0; // initialize the scoreboard index to 0
+
                 @Override
                 public void run() {
-                    updateBossBarData(player);
+                    updateBossBarData(player); // update the boss bar data
+                    player.setScoreboard(scoreboards[sb]); // set the player's scoreboard to the current scoreboard
+                    sb = (sb + 1) % scoreboards.length; // increment the scoreboard index and wrap around to the beginning if necessary
                 }
-            }, 0, 1000);
-            player.setScoreboard(scoreboard);
+            }, 0, 500);
             player.sendMessage("DevStats boss bar and scoreboard shown.");
         }
         return true;
