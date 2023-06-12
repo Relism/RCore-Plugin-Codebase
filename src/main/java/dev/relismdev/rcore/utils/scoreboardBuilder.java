@@ -2,6 +2,7 @@ package dev.relismdev.rcore.utils;
 
 import dev.relismdev.rcore.RCore;
 import dev.relismdev.rcore.api.dataHandler;
+import dev.relismdev.rcore.api.playerStorage;
 import me.clip.placeholderapi.PlaceholderAPI;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -20,6 +21,7 @@ public class scoreboardBuilder {
     private static Timer timer;
     public dataHandler dh = new dataHandler();
     public misc misc = new misc();
+    public playerStorage ps = new playerStorage();
 
     Plugin plugin = RCore.getInstance();
 
@@ -82,10 +84,9 @@ public class scoreboardBuilder {
     }
 
     public void display(Player player, String scoreboardName) {
-        int taskId = 0;
         if (scoreboardName.equals("off")) {
             player.setScoreboard(Bukkit.getScoreboardManager().getNewScoreboard());
-            Bukkit.getScheduler().cancelTask(taskId);
+            Bukkit.getScheduler().cancelTask(Integer.parseInt(ps.get(player, "scoreboard-taskid").getString("value")));
             return;
         }
 
@@ -95,7 +96,7 @@ public class scoreboardBuilder {
         int speed = scoreboard.getInt("speed");
         int tickDelay = 20 / speed;
 
-        taskId = Bukkit.getScheduler().runTaskTimer(plugin, new Runnable() {
+        int taskId = Bukkit.getScheduler().runTaskTimer(plugin, new Runnable() {
             int sb = 0;
             @Override
             public void run() {
@@ -105,6 +106,7 @@ public class scoreboardBuilder {
                 sb = (sb + 1) % frames;
             }
         }, 0L, tickDelay).getTaskId();
+        ps.set(player, "scoreboard-taskid", String.valueOf(taskId));
     }
 
     public JSONObject sanitizeFrames(JSONObject config, Integer frames) {
