@@ -12,13 +12,7 @@ import dev.relismdev.rcore.api.SocketHandler;
 
 public class msgListener implements Listener {
 
-    //private final Plugin plugin;
-
-    /*public msgListener(Plugin plugin, SocketHandler sh) {
-        this.plugin = plugin;
-    }*/
-
-    public static Socket socket = SocketHandler.socket;
+    private static Socket socket = SocketHandler.socket;
     private ExecutorService executor = Executors.newFixedThreadPool(10);
 
     @EventHandler

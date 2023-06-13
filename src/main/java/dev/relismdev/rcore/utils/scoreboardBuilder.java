@@ -2,25 +2,27 @@ package dev.relismdev.rcore.utils;
 
 import dev.relismdev.rcore.RCore;
 import dev.relismdev.rcore.api.dataHandler;
-import dev.relismdev.rcore.api.playerStorage;
+import dev.relismdev.rcore.storage.localStorage;
+import dev.relismdev.rcore.storage.playerStorage;
 import me.clip.placeholderapi.PlaceholderAPI;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
+import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.plugin.Plugin;
-import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scoreboard.*;
-import org.jetbrains.annotations.NotNull;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import javax.json.JsonException;
 import java.util.Timer;
-import java.util.TimerTask;
+import java.util.concurrent.CompletableFuture;
 
 public class scoreboardBuilder {
 
     private static Timer timer;
     public dataHandler dh = new dataHandler();
     public misc misc = new misc();
+    public localStorage ls = new localStorage();
     public playerStorage ps = new playerStorage();
 
     Plugin plugin = RCore.getInstance();
@@ -52,7 +54,7 @@ public class scoreboardBuilder {
     }
 
     public JSONObject parser(String scoreboardName){
-        JSONObject configJson = new JSONObject(dh.configData.toString());
+        JSONObject configJson = new JSONObject(ls.configData.toString());
         JSONObject scoreboardsJson = configJson.getJSONObject("scoreboards");
         JSONObject scoreboard = (JSONObject) scoreboardsJson.get(scoreboardName);
         return scoreboard;
@@ -84,12 +86,22 @@ public class scoreboardBuilder {
     }
 
     public void display(Player player, String scoreboardName) {
-        if (scoreboardName.equals("off")) {
+        ps.set(player, "scoreboard-mode", scoreboardName);
+        msg.log(ps.get(player, "scoreboard-mode").toString());
+        if (scoreboardName.equalsIgnoreCase("off")) {
+            String taskIdStr = player.getMetadata("scoreboard-taskid").get(0).asString();
+            if (taskIdStr != null) {
+                try {
+                    int taskId = Integer.parseInt(taskIdStr);
+                    Bukkit.getScheduler().cancelTask(taskId);
+                } catch (NumberFormatException e) {}
+                player.removeMetadata("scoreboard-taskid", plugin);
+            }
             player.setScoreboard(Bukkit.getScoreboardManager().getNewScoreboard());
-            Bukkit.getScheduler().cancelTask(Integer.parseInt(ps.get(player, "scoreboard-taskid").getString("value")));
             return;
         }
 
+        // Continue with the normal scoreboard rendering logic
         JSONObject scoreboard = parser(scoreboardName);
         JSONObject animation = scoreboard.getJSONObject("animation");
         int frames = frameCalculator(animation);
@@ -106,7 +118,8 @@ public class scoreboardBuilder {
                 sb = (sb + 1) % frames;
             }
         }, 0L, tickDelay).getTaskId();
-        ps.set(player, "scoreboard-taskid", String.valueOf(taskId));
+        // Save the task ID in the player's metadata
+        player.setMetadata("scoreboard-taskid", new FixedMetadataValue(plugin, taskId));
     }
 
     public JSONObject sanitizeFrames(JSONObject config, Integer frames) {

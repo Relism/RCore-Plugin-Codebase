@@ -1,6 +1,6 @@
 package dev.relismdev.rcore.api;
 
-import dev.relismdev.rcore.RCore;
+import dev.relismdev.rcore.storage.playerStorage;
 import dev.relismdev.rcore.utils.*;
 import com.sun.net.httpserver.Headers;
 import com.sun.net.httpserver.HttpExchange;
@@ -18,11 +18,8 @@ import java.util.Map;
 import java.util.Properties;
 
 import dev.relismdev.rcore.utils.reloader;
-import dev.relismdev.rcore.messages.*;
-import dev.relismdev.rcore.messages.msgBuilder;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
-import org.bukkit.metadata.MetadataValue;
 import org.bukkit.plugin.Plugin;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -31,6 +28,7 @@ public class appApi {
 
     public reloader rl = new reloader();
     public fileHandler fh = new fileHandler();
+    public playerStorage ps = new playerStorage();
     public misc misc = new misc();
 
     public void startHttpServer(Integer port, String ssid, File web, String apisecret) {
@@ -193,6 +191,7 @@ public class appApi {
                                 JSONObject playerData = new JSONObject();
                                 playerData.put("username", player.getName());
                                 playerData.put("uuid", player.getUniqueId());
+                                playerData.put("data", ps.fetch(player));
                                 playersArray.put(playerData);
                             }
 

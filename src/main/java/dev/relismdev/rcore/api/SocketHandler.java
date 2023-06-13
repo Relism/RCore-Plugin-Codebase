@@ -6,7 +6,7 @@ import io.socket.client.Socket;
 import io.socket.emitter.Emitter;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.Plugin;
-import org.json.simple.JSONObject;
+import org.json.JSONObject;
 
 import java.io.File;
 import java.net.URISyntaxException;
@@ -84,5 +84,4 @@ public class SocketHandler {
 
         return newssid;
     }
-
 }

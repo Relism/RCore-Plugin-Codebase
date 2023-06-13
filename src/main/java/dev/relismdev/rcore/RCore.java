@@ -13,7 +13,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import dev.relismdev.rcore.api.*;
 import dev.relismdev.rcore.utils.*;
 import dev.relismdev.rcore.utils.msg;
-import org.json.simple.JSONObject;
+import org.json.JSONObject;
 
 import java.io.File;
 import java.util.concurrent.TimeUnit;
@@ -37,7 +37,7 @@ public final class RCore extends JavaPlugin {
 
     //class handling
     public dataHandler dh = new dataHandler();
-    public initializer init = new initializer();
+    public initializer init = new initializer(this);
     public appApi api = new appApi();
     public updater updater = new updater(this);
     public SocketHandler sh = new SocketHandler();
@@ -114,22 +114,15 @@ public final class RCore extends JavaPlugin {
             } else {
                 node = apinode;
             }
-            dh.fetchNode(node);
+            dh.setNode(node);
             if(authtoken != null){
                 if(accept_terms != null && accept_terms.equals("true")){
                     if(port != null && port != 0){
                         if(apisecret != null){
-                            String newssid = null;
-                            try {
-                                newssid = sh.connect(authdata, this);
-                            } catch (InterruptedException e) {
-                                e.printStackTrace();
-                            }
-                            dh.fetchSSID(newssid);
                             msg.log("&#a8328c──[INITIALIZER]────────────────────────────────────");
                             long startTime = System.currentTimeMillis();
                             //initialization
-                            if(!init.initialize(port, webFolder, apisecret, ssid)){
+                            if(!init.initialize(webFolder, apisecret, authdata)){
                                 //initialization error handler
                                 getServer().getPluginManager().disablePlugin(this);
                             } else {

@@ -1,6 +1,7 @@
 package dev.relismdev.rcore.utils;
 
 import dev.relismdev.rcore.api.dataHandler;
+import dev.relismdev.rcore.storage.localStorage;
 import org.json.JSONObject;
 import org.json.simple.parser.ParseException;
 import java.math.RoundingMode;
@@ -9,6 +10,7 @@ import java.text.DecimalFormat;
 public class reloader {
 
     public dataHandler dh = new dataHandler();
+    public localStorage ls = new localStorage();
 
     public boolean reload(){
 
@@ -19,11 +21,11 @@ public class reloader {
         try {
             msg.log("&e<== &#a8328cStarting to download data from the API");
             long startTime = System.currentTimeMillis();
-            dh.downloadConfig();
+            ls.downloadConfig();
             long endTime = System.currentTimeMillis();
-            if(dh.configData != null){
+            if(ls.configData != null){
                 state = true;
-                JSONObject data = dh.configData;
+                JSONObject data = ls.configData;
                 int dataEntries = data.length();
                 double ETA = (endTime - startTime) / 1000;
                 String speed;

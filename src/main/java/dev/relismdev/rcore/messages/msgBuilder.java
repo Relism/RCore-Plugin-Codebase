@@ -1,18 +1,15 @@
 package dev.relismdev.rcore.messages;
 import dev.relismdev.rcore.api.SocketHandler;
-import dev.relismdev.rcore.api.dataHandler;
 import dev.relismdev.rcore.utils.msg;
 import io.socket.client.Socket;
 import io.socket.emitter.Emitter;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
-import org.bukkit.plugin.Plugin;
 import org.json.JSONObject;
 
 public class msgBuilder {
 
     private static Socket socket = SocketHandler.socket;
-    dataHandler dh = new dataHandler();
 
     public msgBuilder(){
         socket.on("discord-outcoming", new Emitter.Listener() {
