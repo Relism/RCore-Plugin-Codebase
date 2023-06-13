@@ -87,7 +87,6 @@ public class scoreboardBuilder {
 
     public void display(Player player, String scoreboardName) {
         ps.set(player, "scoreboard-mode", scoreboardName);
-        msg.log(ps.get(player, "scoreboard-mode").toString());
         if (scoreboardName.equalsIgnoreCase("off")) {
             String taskIdStr = player.getMetadata("scoreboard-taskid").get(0).asString();
             if (taskIdStr != null) {

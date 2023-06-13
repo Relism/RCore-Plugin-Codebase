@@ -24,6 +24,27 @@ public class updater {
         this.client = new OkHttpClient();
     }
 
+    public boolean run(String ver, Boolean autoupdate){
+        patchStatus(ver);
+        Boolean startPlugin = false;
+        if (!autoupdate) {
+            msg.log("AutoUpdater is turned off, even though it is highly recommended to use it.");
+            startPlugin = true;
+        } else if (update(ver)) {
+            startPlugin = false;
+            Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "restart");
+            try {
+                TimeUnit.SECONDS.sleep(5);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        } else {
+            msg.log("There was some kind of issue trying to update your plugin.");
+            startPlugin = false;
+        }
+        return startPlugin;
+    }
+
     public boolean update(String ver) {
         boolean result = false;
         try {
@@ -48,7 +69,7 @@ public class updater {
                 result = true;
             } else {
                 msg.log("Nothing to update. Current : " + version + " Latest : " + latestVersion);
-                result = false;
+                result = true;
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -70,14 +91,14 @@ public class updater {
     }
 
     public void patchStatus(String ver){
-        msg.log("&#a83242Checking the RCore version...");
+        msg.log("Checking the RCore version...");
         String current = ver;
         String latest = (String) fetchLatest().get("date");
         msg.log("&6Current : &d" + current);
         msg.log("&6Latest : &d" + latest);
         if(latest.equals(current)){
             //plugin is up to date
-            msg.log("&#a83242Up to date ! Running RCore v" + current);
+            msg.log("Up to date ! Running RCore v" + current);
         } else {
             //Float behind = (latest - current)*10;
             msg.log("You are not running the latest RCore version !");

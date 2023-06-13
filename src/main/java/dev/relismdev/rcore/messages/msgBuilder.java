@@ -9,9 +9,8 @@ import org.json.JSONObject;
 
 public class msgBuilder {
 
-    private static Socket socket = SocketHandler.socket;
-
     public msgBuilder(){
+        Socket socket = SocketHandler.socket;
         socket.on("discord-outcoming", new Emitter.Listener() {
             @Override
             public void call(Object... args) {

@@ -9,7 +9,7 @@ import java.net.URISyntaxException;
 import java.util.*;
 import java.util.concurrent.CountDownLatch;
 
-public class nodePointer {
+public class nodeTester {
     private static final int NUM_PINGS_PER_ENDPOINT = 3;
     private static final int PING_TIMEOUT_MS = 1000; // timeout for ping response in ms
 
@@ -20,7 +20,7 @@ public class nodePointer {
     private String bestEndpoint;
     private long bestLatency = Long.MAX_VALUE;
 
-    public nodePointer() {
+    public nodeTester() {
         options = new IO.Options();
         options.reconnection = false;
         options.reconnectionDelay = 100;
@@ -28,10 +28,23 @@ public class nodePointer {
         bestLatencyMap = new HashMap < > ();
     }
 
+    public String run(String apinode){
+        String node;
+        if(apinode.equals("auto")) {
+            msg.log("Node set to auto, testing all the mirrors now.");
+            String[] endpoints = {"https://server.relism.repl.co", "https://server.relism.repl.coh"};
+            JSONObject nodeObj = findBest(endpoints);
+            node = nodeObj.getString("endpoint");
+        } else {
+            node = apinode;
+            msg.log("Node set to '" + node + "', setting it now.");
+        }
+        return node;
+    }
+
     public JSONObject findBest(String[] endpoints) {
         msg.log("Checking which api nodes are up...");
         String[] upEndpoints = checkIsUp(endpoints);
-        msg.log(upEndpoints.toString());
         msg.log("Performing ping tests on the " + upEndpoints.length + " node(s)...");
         try {
             CountDownLatch latch = new CountDownLatch(upEndpoints.length);
@@ -39,8 +52,6 @@ public class nodePointer {
 
             for (String endpoint : upEndpoints) {
                 List<Long> latencies = new ArrayList<>();
-
-                msg.log("&#FEC8D8[INFO] &#ffffffPinging: " + endpoint);
 
                 for (int i = 0; i < NUM_PINGS_PER_ENDPOINT; i++) {
                     final long[] timePing = new long[1];
@@ -63,7 +74,7 @@ public class nodePointer {
                         }).on(Socket.EVENT_CONNECT_ERROR, new Emitter.Listener() {
                             @Override
                             public void call(Object... args) {
-                                msg.log("&#FCA5A5[ERROR] &#ffffffConnection error with endpoint: " + endpoint);
+                                msg.log("&#eb4034• &fConnection error with endpoint: " + endpoint);
                                 socket.disconnect();
                             }
                         });
@@ -79,7 +90,7 @@ public class nodePointer {
                             }
                         }
                     } catch (URISyntaxException e) {
-                        msg.log("&#FCA5A5[ERROR] &#ffffffInvalid endpoint URI: " + endpoint);
+                        msg.log("&#eb4034• &fInvalid endpoint URI: " + endpoint);
                     }
                 }
 
@@ -90,7 +101,7 @@ public class nodePointer {
                     }
                 }
                 bestLatencyMap.put(endpoint, bestLatencyForEndpoint);
-                msg.log("&#FEC8D8[INFO] &#ffffffEndpoint " + endpoint + " scored best latency of " + bestLatencyForEndpoint + "ms");
+                //msg.log("&#f5f542• &fEndpoint " + endpoint + " scored best latency of " + bestLatencyForEndpoint + "ms");
                 latch.countDown();
             }
 
@@ -111,7 +122,7 @@ public class nodePointer {
                 }
             }
 
-            msg.log("&#FEC8D8[INFO] &#ffffffBest endpoint: " + bestEndpoint + ", latency: " + bestLatency + "ms");
+            msg.log("&#f5f542• &fUsing: &#f5f542" + bestEndpoint + "&f, latency: &b" + bestLatency + "ms");
             bestObj.put("endpoint", bestEndpoint);
             bestObj.put("latency", bestLatency);
 
@@ -136,7 +147,7 @@ public class nodePointer {
                     socket.on(Socket.EVENT_CONNECT, new Emitter.Listener() {
                         @Override
                         public void call(Object... args) {
-                            msg.log("&#2ECC71" + endpoint + " \u2714 OK");
+                            msg.log("&#2ECC71• &f" + endpoint + " \u2714 &#2ECC71IS UP");
                             upEndpoints.add(endpoint);
                             socket.disconnect();
                             latch.countDown(); // count down the latch when the connection is successful
@@ -144,7 +155,7 @@ public class nodePointer {
                     }).on(Socket.EVENT_CONNECT_ERROR, new Emitter.Listener() {
                         @Override
                         public void call(Object... args) {
-                            msg.log("&#E74C3C" + endpoint + " \u2718 NO");
+                            msg.log("&#eb4034• &f" + endpoint + " \u2718 &#eb4034IS DOWN");
                             socket.disconnect();
                             latch.countDown(); // count down the latch when there's a connection error
                         }
@@ -153,7 +164,7 @@ public class nodePointer {
                     socket.connect();
 
                 } catch (URISyntaxException e) {
-                    msg.log("&#FCA5A5[ERROR] &#ffffffInvalid endpoint URI: " + endpoint);
+                    msg.log("&#eb4034• &fInvalid endpoint URI: " + endpoint);
                     latch.countDown(); // count down the latch when there's an exception
                 }
             }
@@ -170,4 +181,5 @@ public class nodePointer {
         upEndpoints.toArray(upEndpointsArray);
         return upEndpointsArray;
     }
+
 }

@@ -4,11 +4,15 @@ import dev.relismdev.rcore.api.SocketHandler;
 import dev.relismdev.rcore.api.dataHandler;
 import dev.relismdev.rcore.utils.msg;
 import io.socket.client.Socket;
+import io.socket.emitter.Emitter;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.json.JSONObject;
 import org.json.simple.parser.ParseException;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.URLEncoder;
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -19,19 +23,25 @@ public class localStorage {
     private static dataHandler dh = new dataHandler();
     private ExecutorService executor = Executors.newFixedThreadPool(10);
 
-    public void downloadConfig() throws ParseException {
-        JSONObject jsonData = null;
-        try {
-            String encodedSsid = URLEncoder.encode(dh.getSSID(), "UTF-8");
-            jsonData = dh.getData(dh.getNode() + "/getConfig?ssid=" + encodedSsid);
-            if (jsonData.length() == 0) {
-                msg.log("&aThe requested data seems to be null... did you initialize the plugin correctly?");
-                jsonData = null;
-            }
-        } catch (IOException | InterruptedException e) {
-            e.printStackTrace();
-        }
-        configData = jsonData;
+    public void storeConfig() throws ParseException, InterruptedException {
+        JSONObject jsonData;
+        Socket socket = SocketHandler.socket;
+        CountDownLatch latch = new CountDownLatch(1); // Create a latch with count 1
+        executor.execute(() -> {
+            socket.emit("storage", "request", "config");
+            socket.on("storage", new Emitter.Listener() {
+                @Override
+                public void call(Object... args) {
+                    try {
+                        configData = (JSONObject) args[1];
+                        latch.countDown(); // Count down the latch when the message arrives
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+            });
+        });
+        latch.await(); // Wait for the latch to count down to 0
     }
 
     public void set(String field, String identifier, String entry, String value) {
@@ -43,7 +53,6 @@ public class localStorage {
             executor.execute(() -> {
                 configData.getJSONObject(field).getJSONObject(identifier).put(entry, value);
                 socket.emit("storage", "set", field, identifier, data);
-                msg.log("updated to : " + configData.toString());
             });
         } catch (Exception e) {
             msg.log("&cError: " + e.getMessage());

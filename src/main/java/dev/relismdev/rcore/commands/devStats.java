@@ -12,7 +12,6 @@ import dev.relismdev.rcore.utils.scoreboardBuilder;
 
 
 public class devStats implements CommandExecutor {
-    private BossBar bossBar = Bukkit.createBossBar("Title", BarColor.RED, BarStyle.SOLID);
     private scoreboardBuilder builder = new scoreboardBuilder();
 
     private boolean bossBarVisible = false;

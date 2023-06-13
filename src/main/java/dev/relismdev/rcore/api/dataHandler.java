@@ -1,5 +1,6 @@
 package dev.relismdev.rcore.api;
 
+import dev.relismdev.rcore.utils.msg;
 import org.json.JSONObject;
 import java.io.IOException;
 import java.net.*;
@@ -40,7 +41,6 @@ public class dataHandler {
 
     public JSONObject reqAPI(String url) {
         JSONObject jsonData = null;
-
         try {
             jsonData = getData(url);
         } catch (IOException | InterruptedException e) {

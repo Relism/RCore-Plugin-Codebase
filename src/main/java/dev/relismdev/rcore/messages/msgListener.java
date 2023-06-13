@@ -12,11 +12,11 @@ import dev.relismdev.rcore.api.SocketHandler;
 
 public class msgListener implements Listener {
 
-    private static Socket socket = SocketHandler.socket;
     private ExecutorService executor = Executors.newFixedThreadPool(10);
 
     @EventHandler
     public void onPlayerChat(PlayerChatEvent event) {
+        Socket socket = SocketHandler.socket;
         // Create a new JSONObject to hold player information
         JSONObject playerInfo = new JSONObject();
 

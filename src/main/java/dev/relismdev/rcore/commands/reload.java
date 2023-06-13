@@ -9,16 +9,21 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
 public class reload implements CommandExecutor {
 
-    public dataHandler dh = new dataHandler();
     public reloader rl = new reloader();
-    private static Socket socket = SocketHandler.socket;
+
+    private ExecutorService executor = Executors.newFixedThreadPool(10);
 
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
 
-        rl.reload();
+        executor.execute(() -> {
+            rl.reload();
+        });
         return true;
 
     }
