@@ -1,0 +1,19 @@
+name: RCore
+version: '2023-06-14'
+main: dev.relismdev.rcore.RCore
+api-version: 1.19
+prefix: RCore
+authors: [Relism]
+description: just a sync plugin to mongodb
+website: panel.relimc.com
+softdepend: [PlaceholderAPI]
+commands:
+  getdata:
+    description: command1
+    usage: /<command> data
+  reloadData:
+    description: command2
+    usage: /<command>
+  devstats:
+    description: blah blah
+    usage: /<command>

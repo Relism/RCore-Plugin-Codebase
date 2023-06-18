@@ -1,0 +1,29 @@
+# -----------------------------------------
+# Plugin activation :
+# - authtoken: Only set this once when you have just installed the plugin.
+#   ↳ This will be auto-updated each time the server restarts so dont touch it after setting it up.
+# - authtoken: Set this as the authtoken you were giving on purchase.
+# - accept-terms: RCore handles your data as stated in the docs (apidocs.relimc.com)
+#   ↳ By setting this as true you are indicating your agreement to our api terms.
+ssid:
+authtoken:
+accept-terms:
+# -----------------------------------------
+# API :
+# - port: Set this as the port you wish to run the API on (make sure its an open port, or ask your host to open it for you).
+#   ↳ NOTE: You can change the contents of the Rcore-Sync/web folder to host your own webpage
+#   ↳ If you do so, make sure the index.html file (render entrypoint) is in the web folder and not anywhere else.
+# - apisecret: As stated in the docs, the apisecret is a parameter to perform certain operations on your RCore API Instance.
+#   ↳ NOTE : Relism's MC customer support will NEVER ask for it, so keep it for yourself ONLY.
+#   ↳ Set this password to something secure (made only of alphanumerics, no symbols!) and NEVER share it;
+# - node: The node value is the central RCore API endpoint your plugin will point to. (api.relimc.com, fallback-api.relimc.com, auto)
+#   ↳ NOTE : By setting "auto" as the value of the node, the plugin (upon start) will automatically fetch all of the available nodes and test them for latency and stability to use the best one
+port:
+apisecret:
+node:
+# -----------------------------------------
+# Miscellaneous :
+# - autoupdate: enable/disable fully automatic update of the plugin (really really reccomended) -> (true/false)
+#   ↳ NOTE: We can't assure full plugin functionalities if you disable automatic updates.
+autoupdate:
+# -----------------------------------------

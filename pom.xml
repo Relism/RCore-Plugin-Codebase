@@ -42,6 +42,7 @@
                         <configuration>
                             <createDependencyReducedPom>false</createDependencyReducedPom>
                             <outputDirectory>C:\Users\elorc\Documents\Coding\Java\Servers\120purpur\plugins</outputDirectory>
+                            <outputDirectory></outputDirectory>
                         </configuration>
                     </execution>
                 </executions>
