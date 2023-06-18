@@ -3,7 +3,6 @@ package dev.relismdev.rcore.api;
 import dev.relismdev.rcore.utils.msg;
 import io.socket.client.IO;
 import io.socket.client.Socket;
-import io.socket.emitter.Emitter;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.Plugin;
 import org.json.JSONObject;
@@ -16,6 +15,8 @@ public class SocketHandler {
 
     public static Socket socket;
     public static String newssid = null;
+    public static Plugin plugin;
+    CountDownLatch latch = new CountDownLatch(1);
     //private final Map<String, Map<String, List<Consumer<JSONObject>>>> listeners = new HashMap<>();
 
     public SocketHandler() {
@@ -30,56 +31,50 @@ public class SocketHandler {
         }
     }
 
-    public String connect(JSONObject authdata, Plugin plugin) throws InterruptedException {
-        CountDownLatch latch = new CountDownLatch(1); // initialize the latch with a count of 1
-        socket.on(Socket.EVENT_CONNECT, new Emitter.Listener() {
-            @Override
-            public void call(Object... args) {
-                msg.log("Connected to server");
-                socket.emit("authenticate", authdata);
-            }
-        });
+    private void onConnect() {
+        JSONObject authdata = new JSONObject();
+        authdata.put("authtoken", plugin.getConfig().getString("authtoken"));
+        authdata.put("ssid", plugin.getConfig().getString("ssid"));
+        msg.log("Connected to server");
+        socket.emit("authenticate", authdata);
+    }
 
-        socket.on("authenticated", new Emitter.Listener() {
-            @Override
-            public void call(Object... args) {
-                msg.log("Authentication successful");
-            }
-        });
+    private void onAuthenticated() {
+        msg.log("Authentication successful");
+    }
 
-        socket.on("authentication_failed", new Emitter.Listener() {
-            @Override
-            public void call(Object... args) {
-                msg.log("Authentication failed");
-            }
-        });
+    private void onAuthenticationFailed() {
+        msg.log("Authentication failed");
+    }
 
-        socket.on("disconnect", new Emitter.Listener() {
-            @Override
-            public void call(Object... args) {
-                msg.log("Disconnected from server");
-            }
-        });
+    private void onDisconnect() {
+        msg.log("Disconnected from server");
+    }
 
-        socket.on("ssid", new Emitter.Listener() {
-            @Override
-            public void call(Object... args) {
-                try {
-                    newssid = args[0].toString();
-                    File configFile = new File(plugin.getDataFolder(), "config.yml");
-                    YamlConfiguration config = YamlConfiguration.loadConfiguration(configFile);
-                    config.set("ssid", args[0].toString());
-                    config.save(configFile);
-                    plugin.reloadConfig();
-                    latch.countDown(); // decrement the latch count to unblock the main thread
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-        });
+    private void onSsidReceived(Object... args) {
+        try {
+            newssid = args[0].toString();
+            File configFile = new File(plugin.getDataFolder(), "config.yml");
+            YamlConfiguration config = YamlConfiguration.loadConfiguration(configFile);
+            config.set("ssid", args[0].toString());
+            config.save(configFile);
+            plugin.reloadConfig();
+            latch.countDown();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public String connect(Plugin plugin) throws InterruptedException {
+        this.plugin = plugin;
+
+        socket.on(Socket.EVENT_CONNECT, args -> onConnect());
+        socket.on("authenticated", args -> onAuthenticated());
+        socket.on("authentication_failed", args -> onAuthenticationFailed());
+        socket.on("disconnect", args -> onDisconnect());
+        socket.on("ssid", this::onSsidReceived);
+
         socket.connect();
-
-        // block the main thread until the latch count reaches 0
         latch.await();
 
         return newssid;

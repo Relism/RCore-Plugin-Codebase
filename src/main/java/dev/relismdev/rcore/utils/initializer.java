@@ -25,13 +25,12 @@ public class initializer {
         plugin = pl;
     }
 
-    public boolean initialize(File webFolder, String apisecret, JSONObject authdata){
+    public boolean initialize(File webFolder, String apisecret){
         msg.log("Initializing the plugin...");
 
-        String ssid = authdata.getString("ssid");
         String newssid = null;
         try {
-            newssid = sh.connect(authdata, plugin);
+            newssid = sh.connect(plugin);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -46,7 +45,7 @@ public class initializer {
         msg.log("");
         msg.log(misc.separator("&#f54254", "INTERNAL API"));
         msg.log("Initializing the Internal API...");
-        api.startHttpServer(port, ssid, webFolder, apisecret);
+        api.startHttpServer(port, newssid, webFolder, apisecret);
         msg.log("Started the Internal API on ==> : &bhttp://" + ls.getSimple("server", "ip") + ":" + port);
         msg.log("");
 

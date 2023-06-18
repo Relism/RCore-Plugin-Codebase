@@ -19,10 +19,8 @@ import java.util.logging.Logger;
 
 public final class RCore extends JavaPlugin {
 
-    public String authtoken = getConfig().getString("authtoken");
     public String apisecret = getConfig().getString("apisecret");
     public Boolean autoupdate = getConfig().getBoolean("autoupdate");
-    public String ssid = getConfig().getString("ssid");
     public String apinode = getConfig().getString("node");
 
     public static RCore plugin;
@@ -45,10 +43,6 @@ public final class RCore extends JavaPlugin {
         Logger logger = Logger.getLogger("");
         logger.addHandler(consoleHandler);
 
-        JSONObject authdata = new JSONObject();
-        authdata.put("authtoken", authtoken);
-        authdata.put("ssid", ssid);
-
         File webFolder = new File(getDataFolder(), "web");
         Boolean startPlugin;
         plugin = this;
@@ -59,18 +53,17 @@ public final class RCore extends JavaPlugin {
         //to write data abt rcore
         misc.printAsciiArt("&#22D3EE", "Standard", "RCore");
 
-        String version = getFile().getName().replaceAll(".*(-\\d{4}-\\d{2}-\\d{2})\\..*", "$1");
+        //String version = getFile().getName().replaceAll(".*(-\\d{4}-\\d{2}-\\d{2})\\..*", "$1");]
+        String version = plugin.getPluginMeta().getVersion();
 
         msg.log(misc.separator("&#eba434", "UPDATER"));
         startPlugin = updater.run(version, autoupdate);
         msg.log("");
 
-        msg.log(misc.separator("&#f5f542", "NODE-TEST"));
-        dh.setNode(nodeTester.run(apinode));
-        msg.log("");
-
         msg.log(misc.separator("&#eb34b4", "CONFIG CHECK"));
         if(startPlugin && misc.checkConfig(this)) {
+            msg.log(misc.separator("&#f5f542", "NODE-TEST"));
+            dh.setNode(nodeTester.run(apinode));
             msg.log("");
             //DEPENDENCIES
             msg.log(misc.separator("&#34deeb", "DEPENDENCIES"));
@@ -82,7 +75,7 @@ public final class RCore extends JavaPlugin {
             //INITIALIZER
             msg.log(misc.separator("&#8634eb", "INITIALIZER"));
             //initialization
-            if(!init.initialize(webFolder, apisecret, authdata)) {
+            if(!init.initialize(webFolder, apisecret)) {
                 //initialization error handler
                 getServer().getPluginManager().disablePlugin(this);
             } else {

@@ -6,7 +6,7 @@
 
     <groupId>dev.relismdev</groupId>
     <artifactId>RCore</artifactId>
-    <version>1.0</version>
+    <version>2023-06-14</version>
     <packaging>jar</packaging>
 
     <name>RCore</name>

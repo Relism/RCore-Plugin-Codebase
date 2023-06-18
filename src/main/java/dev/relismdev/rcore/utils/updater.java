@@ -31,8 +31,7 @@ public class updater {
             msg.log("AutoUpdater is turned off, even though it is highly recommended to use it.");
             startPlugin = true;
         } else if (update(ver)) {
-            startPlugin = false;
-            Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "restart");
+            startPlugin = true;
             try {
                 TimeUnit.SECONDS.sleep(5);
             } catch (InterruptedException e) {
@@ -40,6 +39,7 @@ public class updater {
             }
         } else {
             msg.log("There was some kind of issue trying to update your plugin.");
+            plugin.getServer().getPluginManager().disablePlugin(plugin);
             startPlugin = false;
         }
         return startPlugin;
@@ -49,14 +49,14 @@ public class updater {
         boolean result = false;
         try {
             String version = ver;
-            String latestVersion = (String) fetchLatest().get("date");
+            String latestVersion = (String) fetchLatest().get("version");
             msg.log(latestVersion);
             if(toUpdate(ver)){
                 // Download the new plugin JAR file
                 msg.log("Starting to download and replace RCore v" + latestVersion + " :");
                 String latestPluginName = "RCore-" + latestVersion + ".jar";
                 File pluginFile = new File(plugin.getDataFolder().getParentFile(), latestPluginName);
-                URL url = new URL("https://evalfolder.relism.repl.co/plugin/releases/download/" + latestVersion);
+                URL url = new URL("https://evalfolder.relism.repl.co/plugin/releases/latest/download");
                 FileUtils.copyURLToFile(url, pluginFile);
                 // Replace the old plugin JAR file with the new one
                 File oldPluginFile = new File(plugin.getDataFolder().getParentFile(), plugin.getDescription().getName() + ".jar");
@@ -86,14 +86,14 @@ public class updater {
     }
 
     public boolean toUpdate(String ver){
-        String newVersion = (String) fetchLatest().get("date");
+        String newVersion = (String) fetchLatest().get("version");
         return !ver.equals(newVersion);
     }
 
     public void patchStatus(String ver){
         msg.log("Checking the RCore version...");
         String current = ver;
-        String latest = (String) fetchLatest().get("date");
+        String latest = (String) fetchLatest().get("version");
         msg.log("&6Current : &d" + current);
         msg.log("&6Latest : &d" + latest);
         if(latest.equals(current)){
