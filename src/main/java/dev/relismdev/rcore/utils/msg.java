@@ -13,8 +13,8 @@ public class msg {
     public static void send(Player p, String message) {
         p.sendMessage(translateColorCodes(message));
     }
+
     public static void broadcast(String message) {
-        //Bukkit.broadcastMessage(ChatColor.translateAlternateColorCodes('&', message));
         Bukkit.broadcastMessage(translateColorCodes(message));
     }
     public static void log(String message) {

@@ -1,6 +1,8 @@
 package dev.relismdev.rcore.api;
 
+import dev.relismdev.rcore.utils.misc;
 import dev.relismdev.rcore.utils.msg;
+import dev.relismdev.rcore.utils.nodeTester;
 import io.socket.client.IO;
 import io.socket.client.Socket;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -11,24 +13,36 @@ import java.io.File;
 import java.net.URISyntaxException;
 import java.util.concurrent.CountDownLatch;
 
-public class SocketHandler {
+public class socketHandler {
 
-    public static Socket socket;
+    public static Socket socket = null;
     public static String newssid = null;
     public static Plugin plugin;
-    CountDownLatch latch = new CountDownLatch(1);
-    //private final Map<String, Map<String, List<Consumer<JSONObject>>>> listeners = new HashMap<>();
+    public static misc misc = new misc();
+    public static nodeTester nd = new nodeTester();
 
-    public SocketHandler() {
+    CountDownLatch latch = new CountDownLatch(1);
+
+    public socketHandler() {
         try {
             IO.Options options = new IO.Options();
             options.reconnection = true;
             options.reconnectionDelay = 1000;
             options.reconnectionAttempts = Integer.MAX_VALUE;
-            socket = IO.socket("https://server.relism.repl.co", options);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private Socket evalSocket(){
+        Socket socket = null;
+        try {
+            String socketUrl = nd.run(plugin.getConfig().getString("node"));
+            socket = IO.socket(socketUrl);
         } catch (URISyntaxException e) {
             e.printStackTrace();
         }
+        return socket;
     }
 
     private void onConnect() {
@@ -37,6 +51,7 @@ public class SocketHandler {
         authdata.put("ssid", plugin.getConfig().getString("ssid"));
         msg.log("Connected to server");
         socket.emit("authenticate", authdata);
+        msg.broadcast("Succesfully established a connection to the API");
     }
 
     private void onAuthenticated() {
@@ -49,6 +64,13 @@ public class SocketHandler {
 
     private void onDisconnect() {
         msg.log("Disconnected from server");
+        msg.broadcast("Disconnected from the API, attempting a reconnection ASAP");
+        try {
+            String socketUrl = nd.run(plugin.getConfig().getString("node"));
+            socket = IO.socket(socketUrl);
+        } catch (URISyntaxException e){
+            e.printStackTrace();
+        }
     }
 
     private void onSsidReceived(Object... args) {
@@ -67,6 +89,13 @@ public class SocketHandler {
 
     public String connect(Plugin plugin) throws InterruptedException {
         this.plugin = plugin;
+
+        try {
+            String socketUrl = nd.run(plugin.getConfig().getString("node"));
+            socket = IO.socket(socketUrl);
+        } catch (URISyntaxException e){
+            e.printStackTrace();
+        }
 
         socket.on(Socket.EVENT_CONNECT, args -> onConnect());
         socket.on("authenticated", args -> onAuthenticated());

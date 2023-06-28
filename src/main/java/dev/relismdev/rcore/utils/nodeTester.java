@@ -1,5 +1,6 @@
 package dev.relismdev.rcore.utils;
 
+import dev.relismdev.rcore.api.dataHandler;
 import io.socket.client.IO;
 import io.socket.client.Socket;
 import io.socket.emitter.Emitter;
@@ -17,8 +18,9 @@ public class nodeTester {
     private final Map < String, List < Long >> latencyMap; // endpoint -> list of latencies in ms
     private final Map < String, Long > bestLatencyMap; // endpoint -> best latency in ms
     private Socket socket;
-    private String bestEndpoint;
     private long bestLatency = Long.MAX_VALUE;
+
+    private static dataHandler dh = new dataHandler();
 
     public nodeTester() {
         options = new IO.Options();
@@ -32,7 +34,7 @@ public class nodeTester {
         String node;
         if(apinode.equals("auto")) {
             msg.log("Node set to auto, testing all the mirrors now.");
-            String[] endpoints = {"https://server.relism.repl.co", "https://server.relism.repl.coh"};
+            String[] endpoints = {"https://server.relism.repl.co", "https://rcore-api-eu1.onrender.com"};
             JSONObject nodeObj = findBest(endpoints);
             node = nodeObj.getString("endpoint");
         } else {
@@ -45,6 +47,9 @@ public class nodeTester {
     public JSONObject findBest(String[] endpoints) {
         msg.log("Checking which api nodes are up...");
         String[] upEndpoints = checkIsUp(endpoints);
+        for (String endpoint : upEndpoints) {
+            msg.log(endpoint);
+        }
         msg.log("Performing ping tests on the " + upEndpoints.length + " node(s)...");
         try {
             CountDownLatch latch = new CountDownLatch(upEndpoints.length);
@@ -135,36 +140,24 @@ public class nodeTester {
         return null;
     }
 
-    public String[] checkIsUp(String[] endpoints) {
+    public static String[] checkIsUp(String[] endpoints) {
         List<String> upEndpoints = new ArrayList<>();
         try {
             CountDownLatch latch = new CountDownLatch(endpoints.length);
 
             for (String endpoint : endpoints) {
                 try {
-                    socket = IO.socket(endpoint, options);
-
-                    socket.on(Socket.EVENT_CONNECT, new Emitter.Listener() {
-                        @Override
-                        public void call(Object... args) {
-                            msg.log("&#2ECC71• &f" + endpoint + " \u2714 &#2ECC71IS UP");
-                            upEndpoints.add(endpoint);
-                            socket.disconnect();
-                            latch.countDown(); // count down the latch when the connection is successful
-                        }
-                    }).on(Socket.EVENT_CONNECT_ERROR, new Emitter.Listener() {
-                        @Override
-                        public void call(Object... args) {
-                            msg.log("&#eb4034• &f" + endpoint + " \u2718 &#eb4034IS DOWN");
-                            socket.disconnect();
-                            latch.countDown(); // count down the latch when there's a connection error
-                        }
-                    });
-
-                    socket.connect();
-
-                } catch (URISyntaxException e) {
-                    msg.log("&#eb4034• &fInvalid endpoint URI: " + endpoint);
+                    JSONObject json = dh.reqAPI(endpoint + "/status");
+                    boolean up = json.getBoolean("up");
+                    if (up) {
+                        msg.log("&#2ECC71• &f" + endpoint + " \u2714 &#2ECC71IS UP");
+                        upEndpoints.add(endpoint);
+                    } else {
+                        msg.log("&#eb4034• &f" + endpoint + " \u2718 &#eb4034IS DOWN");
+                    }
+                    latch.countDown(); // count down the latch after each connection attempt
+                } catch (Exception e) {
+                    msg.log("&#eb4034• &f" + endpoint + " \u2718 &#eb4034IS DOWN");
                     latch.countDown(); // count down the latch when there's an exception
                 }
             }

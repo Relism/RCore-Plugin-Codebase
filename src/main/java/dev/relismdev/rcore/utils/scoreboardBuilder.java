@@ -1,7 +1,6 @@
 package dev.relismdev.rcore.utils;
 
 import dev.relismdev.rcore.RCore;
-import dev.relismdev.rcore.api.dataHandler;
 import dev.relismdev.rcore.storage.localStorage;
 import dev.relismdev.rcore.storage.playerStorage;
 import me.clip.placeholderapi.PlaceholderAPI;
@@ -13,15 +12,8 @@ import org.bukkit.scoreboard.*;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import javax.json.JsonException;
-import java.util.Timer;
-import java.util.concurrent.CompletableFuture;
-
 public class scoreboardBuilder {
 
-    private static Timer timer;
-    public dataHandler dh = new dataHandler();
-    public misc misc = new misc();
     public localStorage ls = new localStorage();
     public playerStorage ps = new playerStorage();
 
@@ -56,8 +48,14 @@ public class scoreboardBuilder {
     public JSONObject parser(String scoreboardName){
         JSONObject configJson = new JSONObject(ls.configData.toString());
         JSONObject scoreboardsJson = configJson.getJSONObject("scoreboards");
-        JSONObject scoreboard = (JSONObject) scoreboardsJson.get(scoreboardName);
-        return scoreboard;
+        if (scoreboardsJson.has(scoreboardName)) {
+            JSONObject scoreboard = scoreboardsJson.getJSONObject(scoreboardName);
+            return scoreboard;
+        }
+        else {
+            msg.log("Data couldnt be found on the local database; if it exists remotely, try reloading it.");
+            return null;
+        }
     }
 
     public Scoreboard bundler(JSONObject frame, Player player){
@@ -86,15 +84,21 @@ public class scoreboardBuilder {
     }
 
     public void display(Player player, String scoreboardName) {
+        msg.send(player, "Attempting to set your scoreboard");
+        String currentScoreboard = ps.get(player, "scoreboard-mode");
+        if (scoreboardName.equalsIgnoreCase(currentScoreboard)) {
+            msg.send(player, "Scoreboard already set to " + scoreboardName);
+            return;
+        }
+
         ps.set(player, "scoreboard-mode", scoreboardName);
         if (scoreboardName.equalsIgnoreCase("off")) {
-            String taskIdStr = player.getMetadata("scoreboard-taskid").get(0).asString();
+            String taskIdStr = ps.get(player, "scoreboard-taskid");
             if (taskIdStr != null) {
                 try {
                     int taskId = Integer.parseInt(taskIdStr);
                     Bukkit.getScheduler().cancelTask(taskId);
                 } catch (NumberFormatException e) {}
-                player.removeMetadata("scoreboard-taskid", plugin);
             }
             player.setScoreboard(Bukkit.getScoreboardManager().getNewScoreboard());
             return;
@@ -117,8 +121,9 @@ public class scoreboardBuilder {
                 sb = (sb + 1) % frames;
             }
         }, 0L, tickDelay).getTaskId();
-        // Save the task ID in the player's metadata
-        player.setMetadata("scoreboard-taskid", new FixedMetadataValue(plugin, taskId));
+        // Save the task ID in the player's ps data
+        msg.send(player, "Succesfully set your scoreboard to " + scoreboardName);
+        ps.set(player, "scoreboard-taskid", String.valueOf(taskId));
     }
 
     public JSONObject sanitizeFrames(JSONObject config, Integer frames) {

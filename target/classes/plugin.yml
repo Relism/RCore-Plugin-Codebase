@@ -8,12 +8,5 @@ description: just a sync plugin to mongodb
 website: panel.relimc.com
 softdepend: [PlaceholderAPI]
 commands:
-  getdata:
-    description: command1
-    usage: /<command> data
-  reloadData:
-    description: command2
-    usage: /<command>
-  devstats:
-    description: blah blah
-    usage: /<command>
+  rcore:
+    description: RCore main thingy

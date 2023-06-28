@@ -4,7 +4,6 @@ import dev.relismdev.rcore.RCore;
 import dev.relismdev.rcore.api.dataHandler;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
-import org.bukkit.metadata.MetadataValue;
 import org.bukkit.plugin.Plugin;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -14,7 +13,6 @@ import org.json.simple.parser.ParseException;
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.sql.Array;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -22,7 +20,6 @@ public class misc {
 
     private static dataHandler dh = new dataHandler();
 
-    private RCore plugin;
     //Miscellanous stuff
     public boolean isPremium(Player player) {
         // check if the player is online
@@ -67,11 +64,15 @@ public class misc {
     }
 
     public void checkSoftDep(String pluginName){
-        Plugin plugin = Bukkit.getPluginManager().getPlugin(pluginName);
-        if (plugin != null) {
-            msg.log("&#34deeb• &fHooked into " + plugin.getName() + " &#34deebv" + plugin.getPluginMeta().getVersion() + "&f!");
-        } else {
-            msg.log("&#eb4034• &fCouldnt find " + plugin.getName() + ", continuing without it");
+        try {
+            Plugin plugin = Bukkit.getPluginManager().getPlugin(pluginName);
+            if (plugin != null) {
+                msg.log("&#34deeb• &fHooked into " + plugin.getName() + " &#34deebv" + plugin.getPluginMeta().getVersion() + "&f!");
+            } else {
+                msg.log("&#eb4034• &fCouldnt find " + pluginName + ", continuing without it");
+            }
+        } catch(Error e) {
+            msg.log("&#eb4034• &fCouldnt find " + pluginName + ", continuing without it");
         }
     }
 
@@ -118,8 +119,9 @@ public class misc {
         }
         return true;
     }
+
     public void printAsciiArt(String color, String font, String text) {
-        String url = "https://server.relism.repl.co" + "/asciiart?font=" + font + "&text=" + text;
+        String url = "https://api.relimc.com/asciiart?font=" + font + "&text=" + text;
         JSONObject rawData = dh.reqAPI(url);
         JSONArray asciiArtArray = rawData.getJSONArray("asciiArt");
         String[] asciiArt = new String[asciiArtArray.length()];

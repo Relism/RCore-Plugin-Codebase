@@ -18,6 +18,7 @@ public class updater {
     private final Plugin plugin;
     private final OkHttpClient client;
     public dataHandler dh = new dataHandler();
+    public String baseUrl = "https://api.relimc.com/rcore/";
 
     public updater(Plugin plugin) {
         this.plugin = plugin;
@@ -56,7 +57,7 @@ public class updater {
                 msg.log("Starting to download and replace RCore v" + latestVersion + " :");
                 String latestPluginName = "RCore-" + latestVersion + ".jar";
                 File pluginFile = new File(plugin.getDataFolder().getParentFile(), latestPluginName);
-                URL url = new URL("https://evalfolder.relism.repl.co/plugin/releases/latest/download");
+                URL url = new URL(baseUrl + "releases/latest/download");
                 FileUtils.copyURLToFile(url, pluginFile);
                 // Replace the old plugin JAR file with the new one
                 File oldPluginFile = new File(plugin.getDataFolder().getParentFile(), plugin.getDescription().getName() + ".jar");
@@ -81,7 +82,7 @@ public class updater {
 
     public JSONObject fetchLatest(){
         JSONObject version = null;
-        version = dh.reqAPI("https://evalfolder.relism.repl.co/plugin/releases/latest");
+        version = dh.reqAPI(baseUrl + "releases/latest");
         return version;
     }
 

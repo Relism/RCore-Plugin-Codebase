@@ -29,16 +29,6 @@ public class dataHandler {
         return json;
     }
 
-    public void pushData(String url) throws IOException, InterruptedException {
-        URI uri = URI.create(url);
-        HttpClient client = HttpClient.newHttpClient();
-        HttpRequest req = (HttpRequest) HttpRequest.newBuilder()
-                .GET()
-                .uri(uri)
-                .build();
-        HttpResponse < String > res = client.send(req, HttpResponse.BodyHandlers.ofString(StandardCharsets.UTF_8));
-    }
-
     public JSONObject reqAPI(String url) {
         JSONObject jsonData = null;
         try {

@@ -8,7 +8,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerChatEvent;
 import org.json.simple.JSONObject;
 
-import dev.relismdev.rcore.api.SocketHandler;
+import dev.relismdev.rcore.api.socketHandler;
 
 public class msgListener implements Listener {
 
@@ -16,7 +16,7 @@ public class msgListener implements Listener {
 
     @EventHandler
     public void onPlayerChat(PlayerChatEvent event) {
-        Socket socket = SocketHandler.socket;
+        Socket socket = socketHandler.socket;
         // Create a new JSONObject to hold player information
         JSONObject playerInfo = new JSONObject();
 

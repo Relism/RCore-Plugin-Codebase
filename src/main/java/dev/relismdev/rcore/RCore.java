@@ -1,5 +1,6 @@
 package dev.relismdev.rcore;
 
+import dev.relismdev.rcore.commands.commandManager;
 import dev.relismdev.rcore.commands.devStats;
 import dev.relismdev.rcore.commands.reload;
 import dev.relismdev.rcore.commands.getData;
@@ -9,7 +10,6 @@ import org.bukkit.plugin.java.JavaPlugin;
 import dev.relismdev.rcore.api.*;
 import dev.relismdev.rcore.utils.*;
 import dev.relismdev.rcore.utils.msg;
-import org.json.JSONObject;
 
 import java.io.File;
 import java.util.logging.ConsoleHandler;
@@ -31,10 +31,9 @@ public final class RCore extends JavaPlugin {
     public appApi api = new appApi();
     public updater updater = new updater(this);
     public misc misc = new misc();
-    private static Socket socket = SocketHandler.socket;
+    private static Socket socket = socketHandler.socket;
     public Handler consoleHandler = new ConsoleHandler();
     public msgListener listener = new msgListener();
-    public nodeTester nodeTester = new nodeTester();
 
     @Override
     public void onEnable() {
@@ -51,7 +50,7 @@ public final class RCore extends JavaPlugin {
         msg.log("&#22D3EE[]────────────────[Starting RCore]────────────────[]");
         long startTime = System.currentTimeMillis();
         //to write data abt rcore
-        misc.printAsciiArt("&#22D3EE", "Standard", "RCore");
+        misc.printAsciiArt("&#22D3EE", "Standard", "Ninello");
 
         //String version = getFile().getName().replaceAll(".*(-\\d{4}-\\d{2}-\\d{2})\\..*", "$1");]
         String version = plugin.getPluginMeta().getVersion();
@@ -62,9 +61,10 @@ public final class RCore extends JavaPlugin {
 
         msg.log(misc.separator("&#eb34b4", "CONFIG CHECK"));
         if(startPlugin && misc.checkConfig(this)) {
-            msg.log(misc.separator("&#f5f542", "NODE-TEST"));
-            dh.setNode(nodeTester.run(apinode));
             msg.log("");
+            /*msg.log(misc.separator("&#f5f542", "NODE-TEST"));
+            dh.setNode(nodeTester.run(apinode));
+            msg.log("");*/
             //DEPENDENCIES
             msg.log(misc.separator("&#34deeb", "DEPENDENCIES"));
             msg.log("Loading softdepends...");
@@ -85,9 +85,7 @@ public final class RCore extends JavaPlugin {
                 msg.log("&aStartup Complete! Process took : &b" + ETA + " &asecond(s)");
                 msg.log("");
                 //END INITIALIZER
-                getCommand("getdata").setExecutor(new getData());
-                getCommand("reloadData").setExecutor(new reload());
-                getCommand("devstats").setExecutor(new devStats());
+                getCommand("rcore").setExecutor(new commandManager());
                 getServer().getPluginManager().registerEvents(listener, this);
             }
         }

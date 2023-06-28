@@ -1,17 +1,13 @@
 package dev.relismdev.rcore.storage;
 
-import dev.relismdev.rcore.api.SocketHandler;
+import dev.relismdev.rcore.api.socketHandler;
 import dev.relismdev.rcore.api.dataHandler;
 import dev.relismdev.rcore.utils.msg;
 import io.socket.client.Socket;
 import io.socket.emitter.Emitter;
-import org.bukkit.configuration.file.YamlConfiguration;
 import org.json.JSONObject;
 import org.json.simple.parser.ParseException;
 
-import java.io.File;
-import java.io.IOException;
-import java.net.URLEncoder;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -25,7 +21,7 @@ public class localStorage {
 
     public void storeConfig() throws ParseException, InterruptedException {
         JSONObject jsonData;
-        Socket socket = SocketHandler.socket;
+        Socket socket = socketHandler.socket;
         CountDownLatch latch = new CountDownLatch(1); // Create a latch with count 1
         executor.execute(() -> {
             socket.emit("storage", "request", "config");
@@ -45,27 +41,37 @@ public class localStorage {
     }
 
     public void set(String field, String identifier, String entry, String value) {
-        Socket socket = SocketHandler.socket;
+        Socket socket = socketHandler.socket;
         try {
             JSONObject data = new JSONObject();
             data.put(entry, value);
             msg.log(data.toString());
-            executor.execute(() -> {
-                configData.getJSONObject(field).getJSONObject(identifier).put(entry, value);
-                socket.emit("storage", "set", field, identifier, data);
-            });
+            JSONObject fielded = configData.getJSONObject(field);
+            JSONObject identified = fielded.getJSONObject(identifier);
+            if(!identified.get(entry).equals(value)){
+                executor.execute(() -> {
+                    configData.getJSONObject(field).getJSONObject(identifier).put(entry, value);
+                    socket.emit("storage", "set", field, identifier, data);
+                });
+            }
         } catch (Exception e) {
             msg.log("&cError: " + e.getMessage());
         }
     }
 
     public JSONObject get(String field, String identifier, String entry) {
+        JSONObject result = null;
         try {
             JSONObject fieldData = configData.getJSONObject(field);
             JSONObject identifiedData = (JSONObject) fieldData.get(identifier);
-            JSONObject result = new JSONObject();
-            result.put("entry", entry);
-            result.put("value", identifiedData.get(entry));
+            if(identifiedData != null){
+                result = new JSONObject();
+                result.put("entry", entry);
+                result.put("value", identifiedData.get(entry));
+            } else {
+                result.put("entry", "null");
+                result.put("value", "null");
+            }
             return result;
         } catch (Exception e) {
             msg.log("&cError: " + e.getMessage());

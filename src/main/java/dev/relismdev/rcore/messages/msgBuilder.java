@@ -1,5 +1,6 @@
 package dev.relismdev.rcore.messages;
-import dev.relismdev.rcore.api.SocketHandler;
+import dev.relismdev.rcore.api.socketHandler;
+import dev.relismdev.rcore.storage.localStorage;
 import dev.relismdev.rcore.utils.msg;
 import io.socket.client.Socket;
 import io.socket.emitter.Emitter;
@@ -9,8 +10,10 @@ import org.json.JSONObject;
 
 public class msgBuilder {
 
+    private static localStorage ls = new localStorage();
+
     public msgBuilder(){
-        Socket socket = SocketHandler.socket;
+        Socket socket = socketHandler.socket;
         socket.on("discord-outcoming", new Emitter.Listener() {
             @Override
             public void call(Object... args) {
@@ -30,7 +33,8 @@ public class msgBuilder {
     }
 
     public String discord(String sender, String message){
-        String syntax = "&f[&bDiscord&f] {sender} &9> &f{message}";//dh.configString("dstomcsyntax");
+        //String syntax = "&f[&bDiscord&f] {sender} &9> &f{message}";//dh.configString("dstomcsyntax");
+        String syntax = ls.getSimple("discord", "client-syntax");
         syntax = syntax.replace("{sender}", sender);
         syntax = syntax.replace("{message}", message);
         return syntax;
