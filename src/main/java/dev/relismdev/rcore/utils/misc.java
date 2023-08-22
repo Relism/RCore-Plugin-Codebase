@@ -10,6 +10,7 @@ import org.json.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -131,5 +132,25 @@ public class misc {
         for (String line : asciiArt) {
             msg.log(color + line);
         }
+    }
+
+    public boolean deleteDirectory(File directory) {
+        if (!directory.exists()) {
+            return true;
+        }
+
+        File[] files = directory.listFiles();
+
+        if (files != null) {
+            for (File file : files) {
+                if (file.isDirectory()) {
+                    deleteDirectory(file);
+                } else {
+                    file.delete();
+                }
+            }
+        }
+
+        return directory.delete();
     }
 }

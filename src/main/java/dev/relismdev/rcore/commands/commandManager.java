@@ -1,5 +1,6 @@
 package dev.relismdev.rcore.commands;
 
+import dev.relismdev.rcore.commands.subcommands.reload;
 import dev.relismdev.rcore.commands.subcommands.setboard;
 import dev.relismdev.rcore.utils.msg;
 import org.bukkit.command.Command;
@@ -16,6 +17,7 @@ public class commandManager implements CommandExecutor {
 
     public commandManager(){
         subcommands.add(new setboard());
+        subcommands.add(new reload());
     }
 
     @Override

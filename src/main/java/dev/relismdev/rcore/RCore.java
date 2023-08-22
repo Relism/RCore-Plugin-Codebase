@@ -1,15 +1,16 @@
 package dev.relismdev.rcore;
 
 import dev.relismdev.rcore.commands.commandManager;
-import dev.relismdev.rcore.commands.devStats;
-import dev.relismdev.rcore.commands.reload;
-import dev.relismdev.rcore.commands.getData;
 import dev.relismdev.rcore.messages.msgListener;
+import dev.relismdev.rcore.proximityChat.voxelBuilder;
+import dev.relismdev.rcore.worldManagement.worldManager;
 import io.socket.client.Socket;
+import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 import dev.relismdev.rcore.api.*;
 import dev.relismdev.rcore.utils.*;
 import dev.relismdev.rcore.utils.msg;
+import org.json.JSONObject;
 
 import java.io.File;
 import java.util.logging.ConsoleHandler;
@@ -21,12 +22,11 @@ public final class RCore extends JavaPlugin {
 
     public String apisecret = getConfig().getString("apisecret");
     public Boolean autoupdate = getConfig().getBoolean("autoupdate");
-    public String apinode = getConfig().getString("node");
 
     public static RCore plugin;
 
     //class handling
-    public dataHandler dh = new dataHandler();
+    public worldManager wm = new worldManager();
     public initializer init = new initializer(this);
     public appApi api = new appApi();
     public updater updater = new updater(this);
@@ -37,7 +37,19 @@ public final class RCore extends JavaPlugin {
 
     @Override
     public void onEnable() {
+        /*JSONObject worldData = new JSONObject();
+        worldData.put("name", "dummyWorld");
+        worldData.put("type", "NORMAL");
+        worldData.put("generateStructures", true);
+        worldData.put("hardcore", false);
+        worldData.put("allowMonsters", true);
+        worldData.put("allowAnimals", true);
+        worldData.put("spawnX", 0);
+        worldData.put("spawnY", 64);
+        worldData.put("spawnZ", 0);
+        wm.createWorld(worldData);*/
         // Create and add the console handler
+        getServer().getPluginManager().registerEvents(new voxelBuilder(), this);
         consoleHandler.setLevel(Level.ALL);
         Logger logger = Logger.getLogger("");
         logger.addHandler(consoleHandler);
@@ -50,7 +62,7 @@ public final class RCore extends JavaPlugin {
         msg.log("&#22D3EE[]────────────────[Starting RCore]────────────────[]");
         long startTime = System.currentTimeMillis();
         //to write data abt rcore
-        misc.printAsciiArt("&#22D3EE", "Standard", "Ninello");
+        misc.printAsciiArt("&#22D3EE", "Standard", "Giufang");
 
         //String version = getFile().getName().replaceAll(".*(-\\d{4}-\\d{2}-\\d{2})\\..*", "$1");]
         String version = plugin.getPluginMeta().getVersion();

@@ -34,7 +34,7 @@ public class nodeTester {
         String node;
         if(apinode.equals("auto")) {
             msg.log("Node set to auto, testing all the mirrors now.");
-            String[] endpoints = {"https://server.relism.repl.co", "https://rcore-api-eu1.onrender.com"};
+            String[] endpoints = {"https://server.relism.repl.co", "https://api.relimc.com"};
             JSONObject nodeObj = findBest(endpoints);
             node = nodeObj.getString("endpoint");
         } else {
