@@ -16,6 +16,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Random;
 
 public class misc {
 
@@ -153,4 +154,29 @@ public class misc {
 
         return directory.delete();
     }
+
+    private static final String CHARACTERS = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
+
+    public static String randomStr(int length) {
+        Random random = new Random();
+        StringBuilder sb = new StringBuilder(length);
+
+        for (int i = 0; i < length; i++) {
+            int randomIndex = random.nextInt(CHARACTERS.length());
+            char randomChar = CHARACTERS.charAt(randomIndex);
+            sb.append(randomChar);
+        }
+
+        return sb.toString();
+    }
+
+    public static void printMatrix(double[][] matrix) {
+        for (double[] row : matrix) {
+            for (double value : row) {
+                System.out.print(value + "\t"); // Adjust formatting as needed
+            }
+            System.out.println(); // Move to the next row
+        }
+    }
+
 }

@@ -46,11 +46,20 @@ public class localStorage {
             JSONObject data = new JSONObject();
             data.put(entry, value);
             msg.log(data.toString());
+
+            if (!configData.has(field)) {
+                configData.put(field, new JSONObject());
+            }
             JSONObject fielded = configData.getJSONObject(field);
+
+            if (!fielded.has(identifier)) {
+                fielded.put(identifier, new JSONObject());
+            }
             JSONObject identified = fielded.getJSONObject(identifier);
-            if(!identified.get(entry).equals(value)){
+
+            if (!identified.has(entry) || !identified.get(entry).equals(value)) {
                 executor.execute(() -> {
-                    configData.getJSONObject(field).getJSONObject(identifier).put(entry, value);
+                    identified.put(entry, value);
                     socket.emit("storage", "set", field, identifier, data);
                 });
             }
@@ -58,6 +67,7 @@ public class localStorage {
             msg.log("&cError: " + e.getMessage());
         }
     }
+
 
     public JSONObject get(String field, String identifier, String entry) {
         JSONObject result = null;

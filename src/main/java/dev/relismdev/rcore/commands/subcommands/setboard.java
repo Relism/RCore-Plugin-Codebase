@@ -31,7 +31,7 @@ public class setboard extends subCommand {
             msg.send(player, "Trying to set your scoreboard to '" + scoreboard + "'");
             sb.display(player, scoreboard);
         } else {
-            msg.send(player, "There seems to be an issue with your command syntax, did you provide the scoreboard ?");
+            msg.send(player, "You have to specify the scoreboard.");
         }
     }
 }
