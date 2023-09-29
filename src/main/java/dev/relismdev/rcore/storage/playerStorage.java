@@ -7,7 +7,6 @@ import java.util.concurrent.Executors;
 
 public class playerStorage {
 
-    private ExecutorService executor = Executors.newFixedThreadPool(10);
     public localStorage ls = new localStorage();
 
     public void set(Player player, String entry, String value){

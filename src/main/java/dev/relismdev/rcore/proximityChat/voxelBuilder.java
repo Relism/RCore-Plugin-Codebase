@@ -316,6 +316,7 @@ public class voxelBuilder implements Listener {
         return new double[]{centerX, centerY, centerZ};
     }
 
+
     // Round a coordinate to two decimal points
     private static double roundToTwoDecimals(double value) {
         return Math.round(value * 100.0) / 100.0;

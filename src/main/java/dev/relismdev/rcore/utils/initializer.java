@@ -10,12 +10,13 @@ public class initializer {
 
     public reloader rl = new reloader();
     public localStorage ls = new localStorage();
-    public appApi api = new appApi();
     public static boolean state = false;
     public static dataHandler dh = new dataHandler();
     public static misc misc = new misc();
 
     private static Plugin plugin;
+    private String apisecret;
+    public appApi api = new appApi();
 
     public initializer(Plugin pl){
         plugin = pl;
@@ -23,6 +24,7 @@ public class initializer {
 
     public boolean initialize(File webFolder, String apisecret){
         msg.log("Initializing the plugin...");
+        this.apisecret = apisecret;
 
         socketHandler sh = new socketHandler();
         String newssid = null;

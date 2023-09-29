@@ -1,22 +1,21 @@
 package dev.relismdev.rcore;
 
 import dev.relismdev.rcore.commands.commandManager;
+import dev.relismdev.rcore.messages.consoleListener;
 import dev.relismdev.rcore.messages.msgListener;
 import dev.relismdev.rcore.proximityChat.voxelBuilder;
 import dev.relismdev.rcore.worldManagement.worldManager;
 import io.socket.client.Socket;
-import org.bukkit.event.player.PlayerMoveEvent;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.core.Logger;
 import org.bukkit.plugin.java.JavaPlugin;
 import dev.relismdev.rcore.api.*;
 import dev.relismdev.rcore.utils.*;
 import dev.relismdev.rcore.utils.msg;
-import org.json.JSONObject;
 
 import java.io.File;
 import java.util.logging.ConsoleHandler;
 import java.util.logging.Handler;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 public final class RCore extends JavaPlugin {
 
@@ -37,23 +36,7 @@ public final class RCore extends JavaPlugin {
 
     @Override
     public void onEnable() {
-        /*JSONObject worldData = new JSONObject();
-        worldData.put("name", "dummyWorld");
-        worldData.put("type", "NORMAL");
-        worldData.put("generateStructures", true);
-        worldData.put("hardcore", false);
-        worldData.put("allowMonsters", true);
-        worldData.put("allowAnimals", true);
-        worldData.put("spawnX", 0);
-        worldData.put("spawnY", 64);
-        worldData.put("spawnZ", 0);
-        wm.createWorld(worldData);*/
-        // Create and add the console handler
         getServer().getPluginManager().registerEvents(new voxelBuilder(), this);
-        consoleHandler.setLevel(Level.ALL);
-        Logger logger = Logger.getLogger("");
-        logger.addHandler(consoleHandler);
-
         File webFolder = new File(getDataFolder(), "web");
         Boolean startPlugin;
         plugin = this;
@@ -96,6 +79,8 @@ public final class RCore extends JavaPlugin {
                 double ETA = (endTime - startTime) / 1000;
                 msg.log("&aStartup Complete! Process took : &b" + ETA + " &asecond(s)");
                 msg.log("");
+                Logger log = (Logger) LogManager.getRootLogger();
+                log.addAppender(new consoleListener());
                 //END INITIALIZER
                 getCommand("rcore").setExecutor(new commandManager());
                 getServer().getPluginManager().registerEvents(listener, this);

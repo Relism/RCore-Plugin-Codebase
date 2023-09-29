@@ -16,6 +16,7 @@ import java.util.concurrent.CountDownLatch;
 public class socketHandler {
 
     public static Socket socket = null;
+    public static boolean initialized = false;
     public static String newssid = null;
     public static Plugin plugin;
     public static misc misc = new misc();
@@ -71,6 +72,7 @@ public class socketHandler {
         } catch (URISyntaxException e){
             e.printStackTrace();
         }
+        initialized = false;
     }
 
     private void onSsidReceived(Object... args) {
@@ -106,6 +108,7 @@ public class socketHandler {
         socket.connect();
         latch.await();
 
+        initialized = true;
         return newssid;
     }
 }

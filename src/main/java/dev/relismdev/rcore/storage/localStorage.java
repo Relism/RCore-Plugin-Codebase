@@ -29,7 +29,7 @@ public class localStorage {
                 @Override
                 public void call(Object... args) {
                     try {
-                        configData = (JSONObject) args[1];
+                        configData = (JSONObject) args[0];
                         latch.countDown(); // Count down the latch when the message arrives
                     } catch (Exception e) {
                         e.printStackTrace();
@@ -43,25 +43,26 @@ public class localStorage {
     public void set(String field, String identifier, String entry, String value) {
         Socket socket = socketHandler.socket;
         try {
-            JSONObject data = new JSONObject();
-            data.put(entry, value);
-            msg.log(data.toString());
+            if(configData != null){
+                JSONObject data = new JSONObject();
+                data.put(entry, value);
 
-            if (!configData.has(field)) {
-                configData.put(field, new JSONObject());
-            }
-            JSONObject fielded = configData.getJSONObject(field);
+                if (!configData.has(field)) {
+                    configData.put(field, new JSONObject());
+                }
+                JSONObject fielded = configData.getJSONObject(field);
 
-            if (!fielded.has(identifier)) {
-                fielded.put(identifier, new JSONObject());
-            }
-            JSONObject identified = fielded.getJSONObject(identifier);
+                if (!fielded.has(identifier)) {
+                    fielded.put(identifier, new JSONObject());
+                }
+                JSONObject identified = fielded.getJSONObject(identifier);
 
-            if (!identified.has(entry) || !identified.get(entry).equals(value)) {
-                executor.execute(() -> {
-                    identified.put(entry, value);
-                    socket.emit("storage", "set", field, identifier, data);
-                });
+                if (!identified.has(entry) || !identified.get(entry).equals(value)) {
+                    executor.execute(() -> {
+                        identified.put(entry, value);
+                        socket.emit("storage", "set", field, identifier, data);
+                    });
+                }
             }
         } catch (Exception e) {
             msg.log("&cError: " + e.getMessage());
@@ -104,6 +105,19 @@ public class localStorage {
         JSONObject fieldData = configData.getJSONObject(field);
         JSONObject identifiedData = (JSONObject) fieldData.getJSONObject(identifier);
         return identifiedData;
+    }
+
+    public boolean forward(String endpoint, String request, JSONObject data) {
+        Socket socket = socketHandler.socket;
+        if (socket != null) {
+            try {
+                socket.emit("forward", endpoint, request, data); // Pass the messages as arguments to emit
+                return true; // Return true if the emit was successful
+            } catch (Exception e) {
+                e.printStackTrace(); // Handle any exceptions here
+            }
+        }
+        return false; // Return false if the socket is not initialized or if emit fails
     }
 
 }

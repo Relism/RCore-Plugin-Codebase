@@ -1,10 +1,10 @@
 name: RCore
 version: '${project.version}'
 main: dev.relismdev.rcore.RCore
-api-version: 1.19
+api-version: 1.20
 prefix: RCore
 authors: [Relism]
-description: just a sync plugin to mongodb
+description: Core web-managed Plugin ecosystem
 website: panel.relimc.com
 softdepend: [PlaceholderAPI]
 commands:
