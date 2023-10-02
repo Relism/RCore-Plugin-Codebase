@@ -1,7 +1,7 @@
 package dev.relismdev.rcore.api;
 
+import dev.relismdev.rcore.api.contexts.sseContext;
 import dev.relismdev.rcore.api.middlewares.authMiddleware;
-import dev.relismdev.rcore.storage.playerStorage;
 import dev.relismdev.rcore.utils.*;
 import com.sun.net.httpserver.Headers;
 import com.sun.net.httpserver.HttpExchange;
@@ -9,7 +9,7 @@ import com.sun.net.httpserver.HttpHandler;
 import com.sun.net.httpserver.HttpServer;
 
 import java.io.*;
-import java.net.InetSocketAddress;;
+import java.net.InetSocketAddress;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -23,13 +23,13 @@ import org.json.JSONObject;
 
 public class appApi {
 
-
     public reloader rl = new reloader();
     public fileHandler fh = new fileHandler();
 
-    private rootContext rootContext = new rootContext(this);
-    private sendMessageContext sendMessageContext = new sendMessageContext(this);
-    private getServerInfoContext getServerInfoContext = new getServerInfoContext(this);
+    private final rootContext rootContext = new rootContext(this);
+    private final sendMessageContext sendMessageContext = new sendMessageContext();
+    private final getServerInfoContext getServerInfoContext = new getServerInfoContext(this);
+    private final sseContext sseContext = new sseContext();
 
 
     public void startHttpServer(Integer port, String ssid, File web, String apisecret) {
@@ -50,6 +50,7 @@ public class appApi {
         try {
             authMiddleware amw = new authMiddleware(apisecret);
             HttpServer server = HttpServer.create(new InetSocketAddress(port), 0);
+            sseContext.startKeepAliveThread();
 
             server.createContext("/", new HttpHandler() {
                 @Override
@@ -57,8 +58,6 @@ public class appApi {
                     rootContext.perform(exchange, web);
                 }
             }).getFilters().add(new parameterFilter());
-
-            server.createContext("/sse", new sseHandler());
 
             server.createContext("/api", new HttpHandler() {
                 @Override
@@ -68,6 +67,15 @@ public class appApi {
                     }
                 }
             }).getFilters().add(new parameterFilter());
+
+            server.createContext("/api/events", new HttpHandler() {
+                @Override
+                public void handle(HttpExchange exchange) throws IOException {
+                    if(amw.handle(exchange)){
+                        sseContext.perform(exchange);
+                    }
+                }
+            });
 
             server.createContext("/api/sendMessage", new HttpHandler() {
                 @Override

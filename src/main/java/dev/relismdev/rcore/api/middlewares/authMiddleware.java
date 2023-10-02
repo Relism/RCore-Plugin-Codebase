@@ -3,10 +3,8 @@ package dev.relismdev.rcore.api.middlewares;
 import com.sun.net.httpserver.Headers;
 import com.sun.net.httpserver.HttpExchange;
 import dev.relismdev.rcore.api.appApi;
-import dev.relismdev.rcore.utils.msg;
 
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.util.Objects;
 
 public class authMiddleware {

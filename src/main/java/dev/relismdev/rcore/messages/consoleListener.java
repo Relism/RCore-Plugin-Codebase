@@ -1,9 +1,7 @@
 package dev.relismdev.rcore.messages;
 
+import dev.relismdev.rcore.api.contexts.sseContext;
 import dev.relismdev.rcore.api.socketHandler;
-import dev.relismdev.rcore.storage.localStorage;
-import dev.relismdev.rcore.storage.loggerStorage;
-import dev.relismdev.rcore.utils.msg;
 import org.apache.logging.log4j.Level;
 import io.socket.client.Socket;
 import org.apache.logging.log4j.core.LogEvent;
@@ -12,18 +10,11 @@ import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.layout.PatternLayout;
 import org.json.JSONObject;
 
-import java.nio.charset.StandardCharsets;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-
 @Plugin(name = "Log4JAppender", category = "Core", elementType = "appender", printObject = true)
 public class consoleListener extends AbstractAppender {
 
-    Socket socket = socketHandler.socket;
-
-    private ExecutorService executor = Executors.newFixedThreadPool(10);
-    loggerStorage lgs = new loggerStorage();
-    localStorage ls = new localStorage();
+    private Socket socket = null;
+    private sseContext sseContext = null;
 
     public consoleListener() {
         super("Log4JAppender", null,
@@ -39,6 +30,16 @@ public class consoleListener extends AbstractAppender {
 
     @Override
     public void append(LogEvent event) {
+        // Check if socket is initialized
+        if (socket == null && socketHandler.socket != null) {
+            socket = socketHandler.socket;
+        }
+
+        // Check if sseConsoleStream is initialized
+        if (sseContext == null) {
+            sseContext = new sseContext();
+        }
+
         // Extract log message data
         String message = event.getMessage().getFormattedMessage();
         Level level = event.getLevel();
@@ -48,7 +49,14 @@ public class consoleListener extends AbstractAppender {
         logData.put("message", message);
         logData.put("level", level.toString());
 
-        socket.emit("forward", "dashboard", "console-incoming", logData);
-        socket.emit("forward", "rcore-ds", "console-incoming", logData);
+        // Emit events only if socket and sseConsoleStream are initialized
+        if (socket != null) {
+            socket.emit("forward", "dashboard", "console-incoming", logData);
+            socket.emit("forward", "rcore-ds", "console-incoming", logData);
+        }
+
+        if (sseContext != null) {
+            sseContext.sendEvent("console-message", logData);
+        }
     }
 }
