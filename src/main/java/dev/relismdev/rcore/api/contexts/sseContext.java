@@ -2,6 +2,8 @@ package dev.relismdev.rcore.api.contexts;
 
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.Headers;
+import dev.relismdev.rcore.api.Context;
+import dev.relismdev.rcore.api.appApi;
 import org.json.JSONObject;
 
 import java.io.IOException;
@@ -9,12 +11,14 @@ import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
-public class sseContext {
+public class sseContext implements Context {
 
     private static List<OutputStream> clients = new ArrayList<>();
 
-    public void perform(HttpExchange exchange) throws IOException {
+    @Override
+    public void perform(HttpExchange exchange, Map<String, Object> params, appApi api) throws IOException {
         Headers responseHeaders = exchange.getResponseHeaders();
         responseHeaders.add("Content-Type", "text/event-stream");
         responseHeaders.add("Connection", "keep-alive");
@@ -61,17 +65,4 @@ public class sseContext {
         }
     }
 
-    public static void startKeepAliveThread() {
-        Thread keepAliveThread = new Thread(() -> {
-            while (true) {
-                try {
-                    sendEvent("KeepAlive", new JSONObject());
-                    Thread.sleep(1000); // Send keep-alive event every second
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
-        });
-        keepAliveThread.start();
-    }
 }

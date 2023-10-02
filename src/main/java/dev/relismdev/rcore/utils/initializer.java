@@ -44,7 +44,7 @@ public class initializer {
         msg.log("");
         msg.log(misc.separator("&#f54254", "INTERNAL API"));
         msg.log("Initializing the Internal API...");
-        api.startHttpServer(port, newssid, webFolder, apisecret);
+        api.startHttpServer(port, webFolder, apisecret);
         msg.log("Started the Internal API on ==> : &bhttp://" + ls.getSimple("server", "ip") + ":" + port);
         msg.log("");
 

@@ -1,6 +1,7 @@
 package dev.relismdev.rcore.api.contexts;
 
 import com.sun.net.httpserver.HttpExchange;
+import dev.relismdev.rcore.api.Context;
 import dev.relismdev.rcore.api.appApi;
 import dev.relismdev.rcore.storage.playerStorage;
 import dev.relismdev.rcore.utils.msg;
@@ -18,18 +19,12 @@ import java.util.Collection;
 import java.util.Map;
 import java.util.Properties;
 
-public class getServerInfoContext {
+public class getServerInfoContext implements Context {
 
-    private appApi api;
-
-    public getServerInfoContext(appApi api) {
-        this.api = api;
-    }
     playerStorage ps = new playerStorage();
 
-    public void perform(HttpExchange exchange) throws IOException {
-        Map< String, Object > params = (Map < String, Object > ) exchange.getAttribute("parameters");
-
+    @Override
+    public void perform(HttpExchange exchange, Map<String, Object> params, appApi api) throws IOException {
         //handle the request
         // msg.log("&b==> &dReceived Internal API Request for Server Information...");
         //parse the process Uptime and put it in an obj
@@ -110,6 +105,7 @@ public class getServerInfoContext {
         //return the JSON obj as response
         api.replyOK(exchange, obj.toString(2));
     }
+
     public static long[] convertMilliseconds(long ms) {
         // Calculate the number of weeks
         long weeks = ms / 1000 / 60 / 60 / 24 / 7;
@@ -134,4 +130,5 @@ public class getServerInfoContext {
                 seconds
         };
     }
+
 }
